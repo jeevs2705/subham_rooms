@@ -1,9 +1,15 @@
 import sqlite3
 from datetime import datetime, timedelta
+import os
+
+def get_db_path():
+    """Get database path - use /tmp for Vercel"""
+    if os.getenv('VERCEL'):
+        return '/tmp/bookings.db'
+    return 'bookings.db'
 
 def init_db():
-
-    conn = sqlite3.connect("bookings.db")
+    conn = sqlite3.connect(get_db_path())
     c = conn.cursor()
 
     c.execute("""
@@ -30,8 +36,7 @@ def init_db():
 
 
 def add_booking(data):
-
-    conn = sqlite3.connect("bookings.db")
+    conn = sqlite3.connect(get_db_path())
     c = conn.cursor()
 
     c.execute("""
@@ -44,8 +49,7 @@ def add_booking(data):
 
 
 def get_bookings():
-
-    conn = sqlite3.connect("bookings.db")
+    conn = sqlite3.connect(get_db_path())
     c = conn.cursor()
 
     c.execute("SELECT * FROM bookings ORDER BY created_at DESC")
@@ -59,7 +63,7 @@ def get_bookings():
 
 def accept_booking(booking_id):
     """Accept a booking and set expiry to 24 hours from now"""
-    conn = sqlite3.connect("bookings.db")
+    conn = sqlite3.connect(get_db_path())
     c = conn.cursor()
     
     now = datetime.now()
@@ -77,7 +81,7 @@ def accept_booking(booking_id):
 
 def extend_booking(booking_id):
     """Extend booking by 24 hours"""
-    conn = sqlite3.connect("bookings.db")
+    conn = sqlite3.connect(get_db_path())
     c = conn.cursor()
     
     c.execute("SELECT expires_at FROM bookings WHERE id = ?", (booking_id,))
@@ -97,7 +101,7 @@ def extend_booking(booking_id):
 
 def remove_booking(booking_id):
     """Remove a booking (only if not accepted)"""
-    conn = sqlite3.connect("bookings.db")
+    conn = sqlite3.connect(get_db_path())
     c = conn.cursor()
     
     c.execute("DELETE FROM bookings WHERE id = ? AND status = 'pending'", (booking_id,))
@@ -108,7 +112,7 @@ def remove_booking(booking_id):
 
 def checkout_booking(booking_id):
     """Check out a booking (remove from database, any status)"""
-    conn = sqlite3.connect("bookings.db")
+    conn = sqlite3.connect(get_db_path())
     c = conn.cursor()
     
     c.execute("DELETE FROM bookings WHERE id = ?", (booking_id,))
@@ -119,7 +123,7 @@ def checkout_booking(booking_id):
 
 def cleanup_expired_bookings():
     """Remove bookings that have expired (24 hours after acceptance)"""
-    conn = sqlite3.connect("bookings.db")
+    conn = sqlite3.connect(get_db_path())
     c = conn.cursor()
     
     now = datetime.now()
@@ -137,7 +141,7 @@ def cleanup_expired_bookings():
 
 def get_booking_by_id(booking_id):
     """Get a single booking by ID"""
-    conn = sqlite3.connect("bookings.db")
+    conn = sqlite3.connect(get_db_path())
     c = conn.cursor()
     
     c.execute("SELECT * FROM bookings WHERE id = ?", (booking_id,))
