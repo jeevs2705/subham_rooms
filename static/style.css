@@ -615,3 +615,289 @@ a:hover {
         min-width: 100px;
     }
 }
+
+
+/* ========================================
+   MOBILE RESPONSIVE STYLES
+   ======================================== */
+
+@media screen and (max-width: 768px) {
+    body {
+        padding: 10px;
+        font-size: 14px;
+    }
+
+    .container, .home-container {
+        padding: 10px;
+        max-width: 100%;
+    }
+
+    .box, .admin-box, .login-box {
+        padding: 20px;
+        margin: 10px 0;
+    }
+
+    h1 {
+        font-size: 24px !important;
+    }
+
+    h2 {
+        font-size: 20px !important;
+    }
+
+    .subtitle {
+        font-size: 14px !important;
+    }
+
+    /* Form elements */
+    input, select, textarea, button {
+        font-size: 16px !important; /* Prevents zoom on iOS */
+        padding: 12px !important;
+    }
+
+    /* Navigation menu */
+    .nav-menu {
+        flex-direction: column;
+        gap: 10px;
+        padding: 10px;
+    }
+
+    .nav-menu a {
+        padding: 10px 15px;
+        font-size: 14px;
+    }
+
+    /* Language switch */
+    .language-switch {
+        top: 10px;
+        right: 10px;
+    }
+
+    .language-switch button {
+        padding: 8px 12px;
+        font-size: 12px;
+    }
+
+    /* Pricing grid */
+    .pricing-grid {
+        grid-template-columns: 1fr !important;
+        gap: 15px;
+    }
+
+    .price-card {
+        padding: 15px;
+    }
+
+    .price-amount {
+        font-size: 16px !important;
+    }
+
+    /* Rooms grid */
+    .rooms-grid {
+        grid-template-columns: 1fr !important;
+        gap: 20px;
+    }
+
+    .room-card {
+        margin-bottom: 20px;
+    }
+
+    /* Admin table */
+    .admin-container {
+        padding: 10px;
+        overflow-x: auto;
+    }
+
+    table {
+        font-size: 12px;
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    table th, table td {
+        padding: 8px 5px;
+        font-size: 11px;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .btn {
+        width: 100%;
+        padding: 8px;
+        font-size: 11px;
+    }
+
+    /* Stats cards */
+    .stats {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .stat-card {
+        width: 100%;
+        margin: 5px 0;
+    }
+
+    /* Hero section */
+    .hero-section h1 {
+        font-size: 28px !important;
+    }
+
+    .hero-section p {
+        font-size: 16px !important;
+    }
+
+    .cta-button {
+        padding: 12px 25px;
+        font-size: 16px;
+    }
+
+    /* Particles - reduce on mobile */
+    .particle {
+        font-size: 20px;
+    }
+
+    .mandala {
+        font-size: 60px;
+        opacity: 0.1;
+    }
+
+    /* Booking details */
+    .booking-details {
+        padding: 15px;
+    }
+
+    .booking-details p {
+        font-size: 14px;
+        margin: 8px 0;
+    }
+
+    /* Room details */
+    .room-images {
+        grid-template-columns: 1fr !important;
+    }
+
+    .facilities-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    /* Footer */
+    .footer {
+        padding: 20px 10px;
+        font-size: 12px;
+    }
+
+    /* Restroom section */
+    .restroom-card {
+        padding: 20px;
+    }
+
+    .restroom-image {
+        height: 200px;
+    }
+
+    /* Terms section */
+    .terms-section {
+        padding: 20px;
+    }
+
+    .terms-section li {
+        font-size: 13px;
+        padding: 8px 0;
+        padding-left: 25px;
+    }
+}
+
+/* Extra small devices (phones in portrait) */
+@media screen and (max-width: 480px) {
+    body {
+        padding: 5px;
+    }
+
+    .box, .admin-box, .login-box {
+        padding: 15px;
+        border-radius: 15px;
+    }
+
+    h1 {
+        font-size: 20px !important;
+    }
+
+    h2 {
+        font-size: 18px !important;
+    }
+
+    input, select, textarea, button {
+        font-size: 16px !important;
+        padding: 10px !important;
+    }
+
+    .price-amount {
+        font-size: 14px !important;
+    }
+
+    table {
+        font-size: 10px;
+    }
+
+    table th, table td {
+        padding: 5px 3px;
+        font-size: 10px;
+    }
+
+    .btn {
+        font-size: 10px;
+        padding: 6px;
+    }
+
+    .hero-section h1 {
+        font-size: 24px !important;
+    }
+
+    .cta-button {
+        padding: 10px 20px;
+        font-size: 14px;
+    }
+}
+
+/* Landscape orientation on mobile */
+@media screen and (max-width: 768px) and (orientation: landscape) {
+    body {
+        padding: 10px 20px;
+    }
+
+    .container {
+        max-width: 90%;
+    }
+
+    .pricing-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+
+    .rooms-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+}
+
+/* Touch-friendly improvements */
+@media (hover: none) and (pointer: coarse) {
+    /* Increase touch targets */
+    button, a, input, select {
+        min-height: 44px;
+        min-width: 44px;
+    }
+
+    /* Better spacing for touch */
+    .nav-menu a {
+        padding: 15px 20px;
+    }
+
+    /* Larger form elements */
+    input, select, textarea {
+        padding: 15px !important;
+    }
+}
