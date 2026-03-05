@@ -317,21 +317,29 @@ def book():
     date = request.form["date"]
     time_slot = request.form["time_slot"]
 
+    # Convert room codes to display names
+    room_names = {
+        "small4": "Small Room (4 People)",
+        "small2": "Mini Room (2 People)",
+        "big8": "Big Room (8 People)"
+    }
+    room_display = room_names.get(room, room)
+
     price = calculate_price(room, people, ac)
 
-    # Add to database
+    # Add to database with original room code
     add_booking((name, room, people, ac, phone, email, date, time_slot, price))
     
     # Get the booking ID of the just-inserted booking
     bookings = get_bookings()
     booking_id = bookings[0][0] if bookings else 0
 
-    # Add to Google Sheets
-    sheet_success = add_booking_to_sheet(booking_id, name, date, time_slot, room, people, ac, phone, email, price, 'Pending')
+    # Add to Google Sheets with display name
+    sheet_success = add_booking_to_sheet(booking_id, name, date, time_slot, room_display, people, ac, phone, email, price, 'Pending')
 
     return render_template("success.html", 
         message="Booking confirmed! Your booking has been recorded.",
-        name=name, room=room, people=people, ac=ac, date=date, time_slot=time_slot, price=price)
+        name=name, room=room_display, people=people, ac=ac, date=date, time_slot=time_slot, price=price)
 
 
 @app.route("/vedhyogi/login", methods=["GET", "POST"])
