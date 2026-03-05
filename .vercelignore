@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+*.db
+.env
+venv/
+env/
+.vscode/
+credentials.json
+bookings.db
+*.md

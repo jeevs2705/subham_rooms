@@ -483,3 +483,6 @@ def admin_reject(booking_id):
 
 if __name__ == "__main__":
     app.run(debug=True)
+
+# For Vercel deployment
+app = app
