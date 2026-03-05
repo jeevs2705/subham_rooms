@@ -3,6 +3,8 @@ import gspread
 from google.oauth2.service_account import Credentials
 from datetime import datetime, timedelta
 from functools import wraps
+import os
+import json
 
 from database import (init_db, add_booking, get_bookings, accept_booking, 
                       extend_booking, remove_booking, cleanup_expired_bookings,
@@ -35,7 +37,17 @@ SCOPES = [
 
 def get_google_sheets_client():
     """Initialize Google Sheets client"""
-    creds = Credentials.from_service_account_file(GOOGLE_CREDENTIALS_FILE, scopes=SCOPES)
+    # Try to get credentials from environment variable (for Vercel)
+    creds_json = os.getenv('GOOGLE_CREDENTIALS')
+    
+    if creds_json:
+        # Parse JSON from environment variable
+        creds_dict = json.loads(creds_json)
+        creds = Credentials.from_service_account_info(creds_dict, scopes=SCOPES)
+    else:
+        # Fall back to credentials.json file (for local development)
+        creds = Credentials.from_service_account_file(GOOGLE_CREDENTIALS_FILE, scopes=SCOPES)
+    
     client = gspread.authorize(creds)
     return client
 
