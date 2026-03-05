@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🕉️ Admin Login - Subham Rooms</title>
+<link rel="stylesheet" href="/static/style.css">
+<style>
+.login-container {
+    max-width: 400px;
+    width: 100%;
+    padding: 20px;
+}
+
+.login-box {
+    background: rgba(255, 248, 231, 0.98);
+    backdrop-filter: blur(15px);
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(255, 153, 51, 0.3);
+    border: 3px solid #ff9933;
+}
+
+.login-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.login-header h1 {
+    color: #d84315;
+    font-size: 28px;
+    margin-bottom: 10px;
+}
+
+.error-message {
+    background: #ffebee;
+    color: #c62828;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    text-align: center;
+    border: 1px solid #ef5350;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    color: #5d4037;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #ff9933;
+    border-radius: 8px;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #d84315;
+    box-shadow: 0 0 0 3px rgba(216, 67, 21, 0.1);
+}
+
+.login-button {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, #ff6f00 0%, #d84315 100%);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.login-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(216, 67, 21, 0.4);
+}
+
+.back-link {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.back-link a {
+    color: #ff6f00;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.back-link a:hover {
+    text-decoration: underline;
+}
+</style>
+</head>
+<body>
+
+<!-- Decorative borders -->
+<div class="border-top"></div>
+<div class="border-bottom"></div>
+
+<!-- Floating particles -->
+<div class="particle">🪔</div>
+<div class="particle">🌺</div>
+<div class="particle">🪷</div>
+<div class="particle">🔔</div>
+<div class="particle">🌸</div>
+<div class="particle">✨</div>
+
+<div class="mandala mandala-1">🕉️</div>
+<div class="mandala mandala-2">🪔</div>
+
+<div class="login-container">
+<div class="login-box">
+
+<div class="login-header">
+<h1>🔐 Admin Login</h1>
+<p class="subtitle">॥ Subham Rooms ॥</p>
+</div>
+
+{% if error %}
+<div class="error-message">
+{{ error }}
+</div>
+{% endif %}
+
+<form method="POST" action="/vedhyogi/login">
+<div class="form-group">
+<label for="username">👤 Username</label>
+<input type="text" id="username" name="username" required autofocus>
+</div>
+
+<div class="form-group">
+<label for="password">🔑 Password</label>
+<input type="password" id="password" name="password" required>
+</div>
+
+<button type="submit" class="login-button">Login</button>
+</form>
+
+<div class="back-link">
+<a href="/">← Back to Home</a>
+</div>
+
+</div>
+</div>
+
+</body>
+</html>

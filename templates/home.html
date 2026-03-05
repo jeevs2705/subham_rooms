@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🕉️ Subham Rooms - Welcome</title>
+<link rel="stylesheet" href="/static/style.css">
+<style>
+.home-container {
+    max-width: 1200px;
+    width: 100%;
+    padding: 20px;
+}
+
+.hero-section {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.hero-section h1 {
+    font-size: 48px;
+    color: #d84315;
+    margin-bottom: 10px;
+}
+
+.hero-section p {
+    font-size: 20px;
+    color: #5d4037;
+    margin-bottom: 30px;
+}
+
+.cta-button {
+    display: inline-block;
+    padding: 15px 40px;
+    background: linear-gradient(135deg, #ff6f00 0%, #d84315 100%);
+    color: white;
+    text-decoration: none;
+    border-radius: 30px;
+    font-size: 20px;
+    font-weight: bold;
+    box-shadow: 0 4px 15px rgba(216, 67, 21, 0.3);
+    transition: all 0.3s ease;
+}
+
+.cta-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(216, 67, 21, 0.4);
+}
+
+.rooms-section {
+    margin: 50px 0;
+}
+
+.section-title {
+    text-align: center;
+    font-size: 32px;
+    color: #d84315;
+    margin-bottom: 30px;
+}
+
+.rooms-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+    margin-bottom: 50px;
+}
+
+.room-card {
+    background: rgba(255, 248, 231, 0.98);
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(255, 153, 51, 0.3);
+    transition: all 0.3s ease;
+    border: 2px solid #ff9933;
+}
+
+.room-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(255, 153, 51, 0.4);
+}
+
+.room-image {
+    width: 100%;
+    height: 200px;
+    background: linear-gradient(135deg, #ffe0b2 0%, #ffcc80 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 60px;
+    overflow: hidden;
+    position: relative;
+}
+
+.room-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.room-info {
+    padding: 20px;
+}
+
+.room-info h3 {
+    color: #d84315;
+    font-size: 22px;
+    margin-bottom: 10px;
+}
+
+.room-info p {
+    color: #5d4037;
+    margin: 8px 0;
+    font-size: 14px;
+}
+
+.room-price {
+    font-size: 24px;
+    font-weight: bold;
+    color: #ff6f00;
+    margin-top: 15px;
+}
+
+.restroom-section {
+    margin: 50px 0;
+    text-align: center;
+}
+
+.restroom-card {
+    background: rgba(255, 248, 231, 0.98);
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 4px 15px rgba(255, 153, 51, 0.3);
+    border: 2px solid #ff9933;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.restroom-image {
+    width: 100%;
+    height: 250px;
+    background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 80px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    overflow: hidden;
+    position: relative;
+}
+
+.restroom-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.terms-section {
+    background: rgba(255, 248, 231, 0.98);
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 4px 15px rgba(255, 153, 51, 0.3);
+    border: 2px solid #ff9933;
+    margin: 50px 0;
+}
+
+.terms-section h2 {
+    color: #d84315;
+    font-size: 28px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.terms-section ul {
+    list-style: none;
+    padding: 0;
+}
+
+.terms-section li {
+    color: #5d4037;
+    padding: 10px 0;
+    padding-left: 30px;
+    position: relative;
+    line-height: 1.6;
+}
+
+.terms-section li:before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: #ff6f00;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.footer {
+    text-align: center;
+    padding: 30px;
+    color: #5d4037;
+    margin-top: 50px;
+}
+</style>
+</head>
+<body>
+
+<!-- Decorative borders -->
+<div class="border-top"></div>
+<div class="border-bottom"></div>
+
+<!-- Floating particles -->
+<div class="particle">🪔</div>
+<div class="particle">🌺</div>
+<div class="particle">🪷</div>
+<div class="particle">🔔</div>
+<div class="particle">🌸</div>
+<div class="particle">✨</div>
+
+<div class="mandala mandala-1">🕉️</div>
+<div class="mandala mandala-2">🪔</div>
+
+<!-- Language Switch Button -->
+<div class="language-switch">
+<button id="langToggle" onclick="toggleLanguage()">
+<span id="langIcon">தமிழ்</span>
+</button>
+</div>
+
+<!-- Navigation Menu -->
+<div class="nav-menu">
+<a href="/" class="active" data-en="🏠 Home" data-ta="🏠 முகப்பு">🏠 Home</a>
+<a href="/booking" data-en="📝 Book Room" data-ta="📝 அறை முன்பதிவு">📝 Book Room</a>
+</div>
+
+<div class="home-container">
+
+<!-- Hero Section -->
+<div class="hero-section">
+<h1 id="mainTitle">Welcome to Subham Rooms</h1>
+<p id="subtitle" class="subtitle">॥ श्री गणेशाय नमः ॥</p>
+<p id="tagline" data-en="Comfortable Stay Near the Temple" data-ta="கோவிலுக்கு அருகில் வசதியான தங்குமிடம்">Comfortable Stay Near the Temple</p>
+<a href="/booking" class="cta-button" id="bookBtn" data-en="Book Your Room Now" data-ta="இப்போதே உங்கள் அறையை முன்பதிவு செய்யுங்கள்">Book Your Room Now</a>
+</div>
+
+<!-- Rooms Section -->
+<div class="rooms-section">
+<h2 class="section-title" id="roomsTitle" data-en="Our Rooms" data-ta="எங்கள் அறைகள்">Our Rooms</h2>
+<div class="rooms-grid">
+
+<!-- Small Room 4 People -->
+<div class="room-card">
+<a href="/room/room-small4" style="text-decoration: none; color: inherit;">
+<div class="room-image">
+<img src="/static/images/room-small4.jpg" alt="Small Room 4" onerror="this.style.display='none'; this.parentElement.innerHTML='🛏️'">
+</div>
+<div class="room-info">
+<h3 data-en="Small Room (4 People)" data-ta="சிறிய அறை (4 நபர்கள்)">Small Room (4 People)</h3>
+<p data-en="Capacity: 4 People" data-ta="திறன்: 4 நபர்கள்">Capacity: 4 People</p>
+<p data-en="AC & Non-AC Available" data-ta="ஏசி & ஏசி இல்லாதது கிடைக்கும்">AC & Non-AC Available</p>
+<p data-en="Clean & Comfortable" data-ta="சுத்தமான & வசதியான">Clean & Comfortable</p>
+<div class="room-price">₹500 - ₹1,000</div>
+<p style="color: #ff6f00; font-size: 14px; margin-top: 10px;" data-en="Click to view details →" data-ta="விவரங்களைக் காண கிளிக் செய்யவும் →">Click to view details →</p>
+</div>
+</a>
+</div>
+
+<!-- Mini Room 2 People -->
+<div class="room-card">
+<a href="/room/room-small2" style="text-decoration: none; color: inherit;">
+<div class="room-image">
+<img src="/static/images/room-small2.jpg" alt="Mini Room 2" onerror="this.style.display='none'; this.parentElement.innerHTML='🛏️'">
+</div>
+<div class="room-info">
+<h3 data-en="Mini Room (2 People)" data-ta="மினி அறை (2 நபர்கள்)">Mini Room (2 People)</h3>
+<p data-en="Capacity: 2 People" data-ta="திறன்: 2 நபர்கள்">Capacity: 2 People</p>
+<p data-en="AC & Non-AC Available" data-ta="ஏசி & ஏசி இல்லாதது கிடைக்கும்">AC & Non-AC Available</p>
+<p data-en="Cozy & Private" data-ta="வசதியான & தனிப்பட்ட">Cozy & Private</p>
+<div class="room-price">₹250 - ₹500</div>
+<p style="color: #ff6f00; font-size: 14px; margin-top: 10px;" data-en="Click to view details →" data-ta="விவரங்களைக் காண கிளிக் செய்யவும் →">Click to view details →</p>
+</div>
+</a>
+</div>
+
+<!-- Big Room 8 People -->
+<div class="room-card">
+<a href="/room/room-big8" style="text-decoration: none; color: inherit;">
+<div class="room-image">
+<img src="/static/images/room-big8.jpg" alt="Big Room 8" onerror="this.style.display='none'; this.parentElement.innerHTML='🛏️'">
+</div>
+<div class="room-info">
+<h3 data-en="Big Room (8 People)" data-ta="பெரிய அறை (8 நபர்கள்)">Big Room (8 People)</h3>
+<p data-en="Capacity: 8 People" data-ta="திறன்: 8 நபர்கள்">Capacity: 8 People</p>
+<p data-en="AC & Non-AC Available" data-ta="ஏசி & ஏசி இல்லாதது கிடைக்கும்">AC & Non-AC Available</p>
+<p data-en="Spacious & Family Friendly" data-ta="விசாலமான & குடும்ப நட்பு">Spacious & Family Friendly</p>
+<div class="room-price">₹1,000 - ₹2,000</div>
+<p style="color: #ff6f00; font-size: 14px; margin-top: 10px;" data-en="Click to view details →" data-ta="விவரங்களைக் காண கிளிக் செய்யவும் →">Click to view details →</p>
+</div>
+</a>
+</div>
+
+</div>
+</div>
+
+<!-- Restroom Section -->
+<div class="restroom-section">
+<h2 class="section-title" id="restroomTitle" data-en="Clean Restroom Facilities" data-ta="சுத்தமான கழிவறை வசதிகள்">Clean Restroom Facilities</h2>
+<div class="restroom-card">
+<div class="restroom-image">
+<img src="/static/images/restroom.jpg" alt="Restroom" onerror="this.style.display='none'; this.parentElement.innerHTML='🚿'">
+</div>
+<p data-en="Hygienic restroom facilities available for all guests" data-ta="அனைத்து விருந்தினர்களுக்கும் சுகாதாரமான கழிவறை வசதிகள் கிடைக்கும்">Hygienic restroom facilities available for all guests</p>
+</div>
+</div>
+
+<!-- Terms & Conditions -->
+<div class="terms-section">
+<h2 id="termsTitle" data-en="Terms & Conditions" data-ta="விதிமுறைகள் & நிபந்தனைகள்">Terms & Conditions</h2>
+<ul>
+<li data-en="Check-in time starts from your selected booking time" data-ta="உள்ளே வரும் நேரம் நீங்கள் தேர்ந்தெடுத்த முன்பதிவு நேரத்திலிருந்து தொடங்குகிறது">Check-in time starts from your selected booking time</li>
+<li data-en="Extra charges of ₹250 per person for guests exceeding room capacity" data-ta="அறை திறனை மீறும் விருந்தினர்களுக்கு ஒரு நபருக்கு ₹250 கூடுதல் கட்டணம்">Extra charges of ₹250 per person for guests exceeding room capacity</li>
+<li data-en="Valid ID proof required at check-in" data-ta="உள்ளே வரும்போது செல்லுபடியாகும் அடையாள சான்று தேவை">Valid ID proof required at check-in</li>
+<li data-en="Smoking and alcohol consumption strictly prohibited" data-ta="புகைபிடித்தல் மற்றும் மது அருந்துதல் கண்டிப்பாக தடைசெய்யப்பட்டுள்ளது">Smoking and alcohol consumption strictly prohibited</li>
+<li data-en="Guests are responsible for any damage to room property" data-ta="அறை சொத்துக்கு ஏதேனும் சேதம் ஏற்பட்டால் விருந்தினர்கள் பொறுப்பு">Guests are responsible for any damage to room property</li>
+<li data-en="Maintain silence after 10 PM for other guests' comfort" data-ta="மற்ற விருந்தினர்களின் வசதிக்காக இரவு 10 மணிக்குப் பிறகு அமைதியை பேணுங்கள்">Maintain silence after 10 PM for other guests' comfort</li>
+<li data-en="Booking confirmation subject to admin approval" data-ta="முன்பதிவு உறுதிப்படுத்தல் நிர்வாக ஒப்புதலுக்கு உட்பட்டது">Booking confirmation subject to admin approval</li>
+<li data-en="Cancellation must be done 24 hours before check-in time" data-ta="உள்ளே வரும் நேரத்திற்கு 24 மணி நேரத்திற்கு முன்பு ரத்து செய்ய வேண்டும்">Cancellation must be done 24 hours before check-in time</li>
+</ul>
+</div>
+
+<!-- Footer -->
+<div class="footer">
+<p id="footerText" data-en="© 2026 Subham Rooms. All rights reserved." data-ta="© 2026 சுபம் அறைகள். அனைத்து உரிமைகளும் பாதுகாக்கப்பட்டவை.">© 2026 Subham Rooms. All rights reserved.</p>
+</div>
+
+</div>
+
+<script>
+let currentLang = 'en';
+
+function toggleLanguage() {
+    currentLang = currentLang === 'en' ? 'ta' : 'en';
+    
+    // Update language button
+    document.getElementById('langIcon').textContent = currentLang === 'en' ? 'தமிழ்' : 'English';
+    
+    // Update main title
+    document.getElementById('mainTitle').textContent = currentLang === 'en' ? 'Welcome to Subham Rooms' : 'சுபம் அறைகளுக்கு வரவேற்கிறோம்';
+    
+    // Update subtitle
+    document.getElementById('subtitle').textContent = currentLang === 'en' ? '॥ श्री गणेशाय नमः ॥' : '॥ ஸ்ரீ கணேசாய நமஹ ॥';
+    
+    // Update all elements with data-en and data-ta attributes
+    document.querySelectorAll('[data-en][data-ta]').forEach(element => {
+        element.textContent = element.getAttribute('data-' + currentLang);
+    });
+}
+</script>
+
+</body>
+</html>

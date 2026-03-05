@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🕉️ Subham Rooms - Admin</title>
+<link rel="stylesheet" href="/static/style.css">
+<style>
+.admin-container {
+    max-width: 1400px;
+    width: 100%;
+    padding: 20px;
+}
+.admin-box {
+    background: rgba(255, 248, 231, 0.98);
+    backdrop-filter: blur(15px);
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(255, 153, 51, 0.3);
+    border: 3px solid #ff9933;
+}
+.admin-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+.stats {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+}
+.stat-card {
+    background: linear-gradient(135deg, #ff6f00 0%, #d84315 100%);
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    min-width: 150px;
+    margin: 10px;
+}
+.stat-card h3 {
+    font-size: 32px;
+    margin: 10px 0;
+}
+.stat-card p {
+    font-size: 14px;
+    opacity: 0.9;
+}
+.status-badge {
+    padding: 5px 12px;
+    border-radius: 15px;
+    font-size: 12px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+.status-pending {
+    background: #ffa726;
+    color: white;
+}
+.status-accepted {
+    background: #66bb6a;
+    color: white;
+}
+.status-expired {
+    background: #ef5350;
+    color: white;
+}
+.action-buttons {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+}
+.btn {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+.btn-accept {
+    background: #66bb6a;
+    color: white;
+}
+.btn-accept:hover {
+    background: #4caf50;
+}
+.btn-extend {
+    background: #42a5f5;
+    color: white;
+}
+.btn-extend:hover {
+    background: #2196f3;
+}
+.btn-remove {
+    background: #ef5350;
+    color: white;
+}
+.btn-remove:hover {
+    background: #f44336;
+}
+.btn-checkout {
+    background: #9e9e9e;
+    color: white;
+}
+.btn-checkout:hover {
+    background: #757575;
+}
+.btn-checkout:disabled {
+    background: #bdbdbd;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+.btn-reject {
+    background: #e53935;
+    color: white;
+}
+.btn-reject:hover {
+    background: #c62828;
+}
+.expires-info {
+    font-size: 11px;
+    color: #d84315;
+    font-weight: bold;
+}
+</style>
+</head>
+<body>
+
+<!-- Decorative borders -->
+<div class="border-top"></div>
+<div class="border-bottom"></div>
+
+<!-- Floating particles -->
+<div class="particle">🪔</div>
+<div class="particle">🌺</div>
+<div class="particle">🪷</div>
+<div class="particle">🔔</div>
+<div class="particle">🌸</div>
+<div class="particle">✨</div>
+
+<div class="mandala mandala-1">🕉️</div>
+<div class="mandala mandala-2">🪔</div>
+
+<div class="admin-container">
+<div class="admin-box">
+
+<div class="admin-header">
+<h1>Subham Rooms - Admin Dashboard</h1>
+<p class="subtitle">॥ All Bookings ॥</p>
+<div style="text-align: right; margin-top: 10px;">
+<a href="/vedhyogi/logout" style="color: #d84315; text-decoration: none; font-weight: bold;">🚪 Logout</a>
+</div>
+</div>
+
+<div class="stats">
+<div class="stat-card">
+<h3>{{ bookings|length }}</h3>
+<p>Total Bookings</p>
+</div>
+<div class="stat-card">
+<h3>{{ bookings|selectattr('10', 'equalto', 'pending')|list|length }}</h3>
+<p>Pending</p>
+</div>
+<div class="stat-card">
+<h3>{{ bookings|selectattr('10', 'equalto', 'accepted')|list|length }}</h3>
+<p>Accepted</p>
+</div>
+</div>
+
+<div style="overflow-x: auto;">
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Name</th>
+<th>Room</th>
+<th>People</th>
+<th>AC</th>
+<th>Phone</th>
+<th>Email</th>
+<th>Date</th>
+<th>Check-In</th>
+<th>Price</th>
+<th>Status</th>
+<th>Accepted Time</th>
+<th>Actions</th>
+</tr>
+</thead>
+<tbody>
+{% for booking in bookings %}
+<tr>
+<td>{{ booking[0] }}</td>
+<td>{{ booking[1] }}</td>
+<td>{{ booking[2] }}</td>
+<td>{{ booking[3] }}</td>
+<td>{{ booking[4] }}</td>
+<td>{{ booking[5] }}</td>
+<td>{{ booking[6] }}</td>
+<td>{{ booking[7] }}</td>
+<td>{{ booking[8] }}</td>
+<td>₹{{ booking[9] }}</td>
+<td>
+    {% if booking[10] == 'pending' %}
+        <span class="status-badge status-pending">Pending</span>
+    {% elif booking[10] == 'accepted' %}
+        <span class="status-badge status-accepted">Accepted</span>
+    {% endif %}
+</td>
+<td>
+    {% if booking[12] %}
+        <span class="expires-info">{{ booking[12] }}</span>
+    {% else %}
+        -
+    {% endif %}
+</td>
+<td>
+    <div class="action-buttons">
+        {% if booking[10] == 'pending' %}
+            <form method="POST" action="/vedhyogi/accept/{{ booking[0] }}" style="display: inline;">
+                <button type="submit" class="btn btn-accept">✓ Accept</button>
+            </form>
+            <form method="POST" action="/vedhyogi/remove/{{ booking[0] }}" style="display: inline;">
+                <button type="submit" class="btn btn-remove" onclick="return confirm('Remove this booking?')">✗ Remove</button>
+            </form>
+        {% elif booking[10] == 'accepted' %}
+            <form method="POST" action="/vedhyogi/extend/{{ booking[0] }}" style="display: inline;">
+                <button type="submit" class="btn btn-extend">+ 24h Extend</button>
+            </form>
+            {% if booking[14] %}
+                <form method="POST" action="/vedhyogi/checkout/{{ booking[0] }}" style="display: inline;">
+                    <button type="submit" class="btn btn-checkout" onclick="return confirm('Check out this guest? This will remove from active bookings but keep in Google Sheets.')">✓ Check Out</button>
+                </form>
+            {% else %}
+                <button class="btn btn-checkout" disabled title="Check-out available on booking date/time">⏳ Not Yet</button>
+            {% endif %}
+            <form method="POST" action="/vedhyogi/reject/{{ booking[0] }}" style="display: inline;">
+                <button type="submit" class="btn btn-reject" onclick="return confirm('Reject this accepted booking? This will remove it completely.')">✗ Reject</button>
+            </form>
+        {% endif %}
+    </div>
+</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+
+<div style="text-align: center; margin-top: 30px;">
+<a href="/">🏠 Back to Home</a>
+<a href="/booking" style="margin-left: 20px;">📝 New Booking</a>
+</div>
+
+</div>
+</div>
+
+</body>
+</html>

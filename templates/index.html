@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🕉️ Subham Rooms Booking</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+
+<!-- Decorative borders -->
+<div class="border-top"></div>
+<div class="border-bottom"></div>
+
+<!-- Floating particles -->
+<div class="particle">🪔</div>
+<div class="particle">🌺</div>
+<div class="particle">🪷</div>
+<div class="particle">🔔</div>
+<div class="particle">🌸</div>
+<div class="particle">✨</div>
+
+<!-- Decorative mandalas -->
+<div class="mandala mandala-1">🕉️</div>
+<div class="mandala mandala-2">🪔</div>
+
+<!-- Language Switch Button -->
+<div class="language-switch">
+<button id="langToggle" onclick="toggleLanguage()">
+<span id="langIcon">தமிழ்</span>
+</button>
+</div>
+
+<!-- Navigation Menu -->
+<div class="nav-menu">
+<a href="/" data-en="🏠 Home" data-ta="🏠 முகப்பு">🏠 Home</a>
+<a href="/booking" class="active" data-en="📝 Book Room" data-ta="📝 அறை முன்பதிவு">📝 Book Room</a>
+</div>
+
+<div class="container">
+<div class="box">
+
+<h1 id="mainTitle">Subham Rooms</h1>
+<p class="subtitle" id="subtitle">॥ श्री गणेशाय नमः ॥</p>
+
+<!-- Pricing Section -->
+<div class="pricing-section">
+<h2 id="pricingTitle">💰 Pricing Information</h2>
+<div class="pricing-grid">
+<div class="price-card">
+<div class="price-icon">🏠</div>
+<div class="price-title" data-en="Small Room (4 People)" data-ta="சிறிய அறை (4 நபர்கள்)">Small Room (4 People)</div>
+<div class="price-amount">₹500 / ₹1,000</div>
+<div class="price-duration" data-en="Non-AC / AC" data-ta="ஏசி இல்லாதது / ஏசி">Non-AC / AC</div>
+</div>
+<div class="price-card">
+<div class="price-icon">🏡</div>
+<div class="price-title" data-en="Mini Room (2 People)" data-ta="மினி அறை (2 நபர்கள்)">Mini Room (2 People)</div>
+<div class="price-amount">₹250 / ₹500</div>
+<div class="price-duration" data-en="Non-AC / AC" data-ta="ஏசி இல்லாதது / ஏசி">Non-AC / AC</div>
+</div>
+<div class="price-card">
+<div class="price-icon">🏘️</div>
+<div class="price-title" data-en="Big Room (8 People)" data-ta="பெரிய அறை (8 நபர்கள்)">Big Room (8 People)</div>
+<div class="price-amount">₹1,000 / ₹2,000</div>
+<div class="price-duration" data-en="Non-AC / AC" data-ta="ஏசி இல்லாதது / ஏசி">Non-AC / AC</div>
+</div>
+<div class="price-card">
+<div class="price-icon">👥</div>
+<div class="price-title" data-en="Extra Person" data-ta="கூடுதல் நபர்">Extra Person</div>
+<div class="price-amount">₹250</div>
+<div class="price-duration" data-en="per person" data-ta="ஒரு நபருக்கு">per person</div>
+</div>
+</div>
+<div class="pricing-note">
+<strong data-en="Note:" data-ta="குறிப்பு:">Note:</strong>
+<span data-en="Extra charges apply for guests exceeding room capacity" data-ta="அறை திறனை மீறும் விருந்தினர்களுக்கு கூடுதல் கட்டணம் பொருந்தும்">Extra charges apply for guests exceeding room capacity</span>
+</div>
+</div>
+
+<form action="/book" method="POST">
+
+<label for="name">👤 Full Name</label>
+<input type="text" name="name" id="name" placeholder="" data-placeholder-en="Enter your full name" data-placeholder-ta="உங்கள் முழு பெயரை உள்ளிடவும்" required>
+
+<label for="room" data-en="🏛️ Select Room" data-ta="🏛️ அறையைத் தேர்ந்தெடுக்கவும்">🏛️ Select Room</label>
+<select name="room" id="room" required>
+<option value="" data-en="-- Choose a Room --" data-ta="-- அறையைத் தேர்ந்தெடுக்கவும் --">-- Choose a Room --</option>
+<option value="small4" data-en="Small Room (4 People)" data-ta="சிறிய அறை (4 நபர்கள்)">Small Room (4 People)</option>
+<option value="small2" data-en="Mini Room (2 People)" data-ta="மினி அறை (2 நபர்கள்)">Mini Room (2 People)</option>
+<option value="big8" data-en="Big Room (8 People)" data-ta="பெரிய அறை (8 நபர்கள்)">Big Room (8 People)</option>
+</select>
+
+<label for="people" data-en="👥 Number of People" data-ta="👥 நபர்களின் எண்ணிக்கை">👥 Number of People</label>
+<input type="number" name="people" id="people" placeholder="" data-placeholder-en="Enter number of people" data-placeholder-ta="நபர்களின் எண்ணிக்கையை உள்ளிடவும்" min="1" required>
+
+<label for="ac" data-en="❄️ AC Preference" data-ta="❄️ ஏசி விருப்பம்">❄️ AC Preference</label>
+<select name="ac" id="ac" required>
+<option value="no" data-en="Non AC (₹500)" data-ta="ஏசி இல்லாதது (₹500)">Non AC (₹500)</option>
+<option value="yes" data-en="AC (₹1000)" data-ta="ஏசி (₹1000)">AC (₹1000)</option>
+</select>
+
+<label for="date" data-en="📅 Booking Date" data-ta="📅 முன்பதிவு தேதி">📅 Booking Date</label>
+<input type="date" name="date" id="date" required>
+
+<label for="time_slot" data-en="⏰ Check-In Time" data-ta="⏰ உள்ளே வரும் நேரம்">⏰ Check-In Time</label>
+<select name="time_slot" id="time_slot" required>
+<option value="" data-en="-- Select Check-In Time --" data-ta="-- நேரத்தைத் தேர்ந்தெடுக்கவும் --">-- Select Check-In Time --</option>
+<option value="12:00 AM" data-en="12:00 AM (Midnight)" data-ta="12:00 AM (நள்ளிரவு)">12:00 AM (Midnight)</option>
+<option value="01:00 AM">01:00 AM</option>
+<option value="02:00 AM">02:00 AM</option>
+<option value="03:00 AM">03:00 AM</option>
+<option value="04:00 AM" data-en="04:00 AM (Early Morning)" data-ta="04:00 AM (அதிகாலை)">04:00 AM (Early Morning)</option>
+<option value="05:00 AM">05:00 AM</option>
+<option value="06:00 AM">06:00 AM</option>
+<option value="07:00 AM" data-en="07:00 AM (Morning)" data-ta="07:00 AM (காலை)">07:00 AM (Morning)</option>
+<option value="08:00 AM">08:00 AM</option>
+<option value="09:00 AM">09:00 AM</option>
+<option value="10:00 AM">10:00 AM</option>
+<option value="11:00 AM">11:00 AM</option>
+<option value="12:00 PM" data-en="12:00 PM (Afternoon)" data-ta="12:00 PM (பிற்பகல்)">12:00 PM (Afternoon)</option>
+<option value="01:00 PM">01:00 PM</option>
+<option value="02:00 PM">02:00 PM</option>
+<option value="03:00 PM">03:00 PM</option>
+<option value="04:00 PM" data-en="04:00 PM (Evening)" data-ta="04:00 PM (மாலை)">04:00 PM (Evening)</option>
+<option value="05:00 PM">05:00 PM</option>
+<option value="06:00 PM">06:00 PM</option>
+<option value="07:00 PM">07:00 PM</option>
+<option value="08:00 PM" data-en="08:00 PM (Night)" data-ta="08:00 PM (இரவு)">08:00 PM (Night)</option>
+<option value="09:00 PM">09:00 PM</option>
+<option value="10:00 PM">10:00 PM</option>
+<option value="11:00 PM">11:00 PM</option>
+</select>
+
+<label for="phone" data-en="📱 Phone Number" data-ta="📱 தொலைபேசி எண்">📱 Phone Number</label>
+<input type="tel" name="phone" id="phone" placeholder="" data-placeholder-en="Enter your phone number" data-placeholder-ta="உங்கள் தொலைபேசி எண்ணை உள்ளிடவும்" required>
+
+<label for="email" data-en="📧 Email (Optional)" data-ta="📧 மின்னஞ்சல் (விருப்பமானது)">📧 Email (Optional)</label>
+<input type="email" name="email" id="email" placeholder="" data-placeholder-en="Enter your email" data-placeholder-ta="உங்கள் மின்னஞ்சலை உள்ளிடவும்">
+
+<button type="submit" id="submitBtn" data-en="Book Now" data-ta="இப்போது முன்பதிவு செய்யுங்கள்">Book Now</button>
+
+</form>
+
+</div>
+</div>
+
+<script>
+let currentLang = 'en';
+
+function toggleLanguage() {
+    currentLang = currentLang === 'en' ? 'ta' : 'en';
+    
+    // Update language button
+    document.getElementById('langIcon').textContent = currentLang === 'en' ? 'தமிழ்' : 'English';
+    
+    // Update main title
+    document.getElementById('mainTitle').textContent = currentLang === 'en' ? 'Subham Rooms' : 'சுபம் அறைகள்';
+    
+    // Update subtitle
+    document.getElementById('subtitle').textContent = currentLang === 'en' ? '॥ श्री गणेशाय नमः ॥' : '॥ ஸ்ரீ கணேசாய நமஹ ॥';
+    
+    // Update pricing title
+    document.getElementById('pricingTitle').textContent = currentLang === 'en' ? '💰 Pricing Information' : '💰 விலை தகவல்';
+    
+    // Update all elements with data-en and data-ta attributes
+    document.querySelectorAll('[data-en][data-ta]').forEach(element => {
+        if (element.tagName === 'OPTION') {
+            element.textContent = element.getAttribute('data-' + currentLang);
+        } else {
+            element.textContent = element.getAttribute('data-' + currentLang);
+        }
+    });
+    
+    // Update placeholders
+    document.querySelectorAll('[data-placeholder-en][data-placeholder-ta]').forEach(element => {
+        element.placeholder = element.getAttribute('data-placeholder-' + currentLang);
+    });
+    
+    // Update submit button
+    document.getElementById('submitBtn').textContent = currentLang === 'en' ? 'Book Now' : 'இப்போது முன்பதிவு செய்யுங்கள்';
+}
+
+// Set initial placeholders
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('name').placeholder = 'Enter your full name';
+    document.getElementById('people').placeholder = 'Enter number of people';
+    document.getElementById('phone').placeholder = 'Enter your phone number';
+    document.getElementById('email').placeholder = 'Enter your email';
+});
+</script>
+
+</body>
+
+</html>
