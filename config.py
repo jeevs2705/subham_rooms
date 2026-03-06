@@ -1,5 +1,5 @@
 # Google Sheets Configuration
-GOOGLE_SHEET_NAME = "Room Bookings"  # Name of your Google Sheet
+GOOGLE_SHEET_NAME = "Room bookings"  # Name of your Google Sheet (exact spelling matters!)
 GOOGLE_CREDENTIALS_FILE = "credentials.json"  # Path to your service account JSON file
 
 ROOM_CAPACITY = {

@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, jsonify, session
 import gspread
+import gspread.exceptions
 from google.oauth2.service_account import Credentials
 from datetime import datetime, timedelta
 from functools import wraps
@@ -54,49 +55,61 @@ def get_google_sheets_client():
 def get_or_create_sheet_for_date(date_str):
     """Get or create a sheet for specific date"""
     try:
+        print(f"[SHEETS] Connecting to Google Sheets...")
         client = get_google_sheets_client()
+        print(f"[SHEETS] Client created successfully")
+        
+        print(f"[SHEETS] Opening spreadsheet: {GOOGLE_SHEET_NAME}")
         spreadsheet = client.open(GOOGLE_SHEET_NAME)
+        print(f"[SHEETS] Spreadsheet opened: {spreadsheet.title}")
         
         # Try to get existing sheet
         try:
             worksheet = spreadsheet.worksheet(date_str)
-        except:
+            print(f"[SHEETS] Found existing worksheet: {date_str}")
+        except gspread.exceptions.WorksheetNotFound:
+            print(f"[SHEETS] Worksheet not found, creating new one: {date_str}")
             # Create new sheet for this date
             worksheet = spreadsheet.add_worksheet(title=date_str, rows=100, cols=13)
+            print(f"[SHEETS] New worksheet created: {date_str}")
             
             # Add headers
             headers = ['ID', 'Name', 'Room', 'People', 'AC', 'Phone', 'Email', 'Date', 'Check-In Time', 'Check-Out Time', 'Price', 'Status', 'Accepted Time']
             worksheet.append_row(headers)
+            print("[SHEETS] Headers added successfully")
             
             # Format header row
-            worksheet.format('A1:M1', {
-                'textFormat': {'bold': True, 'fontSize': 11},
-                'backgroundColor': {'red': 0.2, 'green': 0.6, 'blue': 0.8},
-                'horizontalAlignment': 'CENTER'
-            })
-            
-            # Set column widths for better visibility (using columns_auto_resize or batch_update)
             try:
-                # Try newer method
-                worksheet.columns_auto_resize(0, 12)  # Auto-resize columns A to M
-            except:
-                # If that doesn't work, skip column width setting
-                pass
+                worksheet.format('A1:M1', {
+                    'textFormat': {'bold': True, 'fontSize': 11},
+                    'backgroundColor': {'red': 0.2, 'green': 0.6, 'blue': 0.8},
+                    'horizontalAlignment': 'CENTER'
+                })
+                print("[SHEETS] Header formatting applied")
+            except Exception as e:
+                print(f"[SHEETS] Warning: Could not format headers: {e}")
         
+        print(f"[SHEETS] Worksheet ready: {worksheet.title}")
         return worksheet
+        
     except Exception as e:
-        print(f"Error accessing Google Sheets: {e}")
+        print(f"[SHEETS] ERROR accessing Google Sheets: {e}")
+        print(f"[SHEETS] Error type: {type(e).__name__}")
+        import traceback
+        traceback.print_exc()
         return None
 
 def add_booking_to_sheet(booking_id, name, date_str, time_slot, room, people, ac, phone, email, price, status='Pending'):
     """Add booking to Google Sheet"""
     try:
-        print(f"Attempting to add booking {booking_id} to sheet for date {date_str}")
+        print(f"[SHEETS] Attempting to add booking {booking_id} to sheet for date {date_str}")
         worksheet = get_or_create_sheet_for_date(date_str)
         
         if not worksheet:
-            print("ERROR: Could not get or create worksheet")
+            print("[SHEETS] ERROR: Could not get or create worksheet")
             return False
+        
+        print(f"[SHEETS] Worksheet obtained: {worksheet.title}")
             
         # Check-in time is the time_slot, check-out time is empty initially
         check_in = time_slot
@@ -118,40 +131,48 @@ def add_booking_to_sheet(booking_id, name, date_str, time_slot, room, people, ac
             ''
         ]
         
-        print(f"Adding row: {row}")
+        print(f"[SHEETS] Prepared row data: {row}")
         worksheet.append_row(row)
-        print("Row appended successfully")
+        print("[SHEETS] Row appended successfully")
         
         # Format the newly added row
-        row_num = len(worksheet.get_all_values())
-        worksheet.format(f'A{row_num}:M{row_num}', {
-            'horizontalAlignment': 'CENTER',
-            'verticalAlignment': 'MIDDLE'
-        })
-        
-        # Format price column
-        worksheet.format(f'K{row_num}', {
-            'horizontalAlignment': 'RIGHT',
-            'textFormat': {'bold': True}
-        })
-        
-        # Format status column with color
-        if status == 'Pending':
-            worksheet.format(f'L{row_num}', {
-                'backgroundColor': {'red': 1.0, 'green': 0.8, 'blue': 0.4},
+        try:
+            row_num = len(worksheet.get_all_values())
+            print(f"[SHEETS] Formatting row {row_num}")
+            
+            worksheet.format(f'A{row_num}:M{row_num}', {
+                'horizontalAlignment': 'CENTER',
+                'verticalAlignment': 'MIDDLE'
+            })
+            
+            # Format price column
+            worksheet.format(f'K{row_num}', {
+                'horizontalAlignment': 'RIGHT',
                 'textFormat': {'bold': True}
             })
-        elif status == 'Accepted':
-            worksheet.format(f'L{row_num}', {
-                'backgroundColor': {'red': 0.7, 'green': 0.9, 'blue': 0.7},
-                'textFormat': {'bold': True}
-            })
+            
+            # Format status column with color
+            if status == 'Pending':
+                worksheet.format(f'L{row_num}', {
+                    'backgroundColor': {'red': 1.0, 'green': 0.8, 'blue': 0.4},
+                    'textFormat': {'bold': True}
+                })
+            elif status == 'Accepted':
+                worksheet.format(f'L{row_num}', {
+                    'backgroundColor': {'red': 0.7, 'green': 0.9, 'blue': 0.7},
+                    'textFormat': {'bold': True}
+                })
+            
+            print("[SHEETS] Row formatting applied")
+        except Exception as e:
+            print(f"[SHEETS] Warning: Could not format row: {e}")
         
-        print("Booking added to sheet successfully")
+        print("[SHEETS] Booking added to sheet successfully")
         return True
         
     except Exception as e:
-        print(f"ERROR adding booking to sheet: {e}")
+        print(f"[SHEETS] ERROR adding booking to sheet: {e}")
+        print(f"[SHEETS] Error type: {type(e).__name__}")
         import traceback
         traceback.print_exc()
         return False
