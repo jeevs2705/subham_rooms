@@ -98,58 +98,69 @@ def get_or_create_sheet_for_date(date_str):
 def add_booking_to_sheet(booking_id, name, date_str, time_slot, room, people, ac, phone, email, price, status='Pending'):
     """Add booking to Google Sheet"""
     try:
+        print(f"Attempting to add booking {booking_id} to sheet for date {date_str}")
         worksheet = get_or_create_sheet_for_date(date_str)
-        if worksheet:
-            # Check-in time is the time_slot, check-out time is empty initially
-            check_in = time_slot
-            check_out = ''
+        
+        if not worksheet:
+            print("ERROR: Could not get or create worksheet")
+            return False
             
-            row = [
-                booking_id,
-                name,
-                room,
-                people,
-                ac,
-                phone,
-                email,
-                date_str,
-                check_in,
-                check_out,  # Empty until checkout
-                f"₹{price}",
-                status,
-                ''
-            ]
-            worksheet.append_row(row)
-            
-            # Format the newly added row
-            row_num = len(worksheet.get_all_values())
-            worksheet.format(f'A{row_num}:M{row_num}', {
-                'horizontalAlignment': 'CENTER',
-                'verticalAlignment': 'MIDDLE'
-            })
-            
-            # Format price column
-            worksheet.format(f'K{row_num}', {
-                'horizontalAlignment': 'RIGHT',
+        # Check-in time is the time_slot, check-out time is empty initially
+        check_in = time_slot
+        check_out = ''
+        
+        row = [
+            str(booking_id),
+            str(name),
+            str(room),
+            str(people),
+            str(ac),
+            str(phone),
+            str(email),
+            str(date_str),
+            str(check_in),
+            str(check_out),  # Empty until checkout
+            f"₹{price}",
+            str(status),
+            ''
+        ]
+        
+        print(f"Adding row: {row}")
+        worksheet.append_row(row)
+        print("Row appended successfully")
+        
+        # Format the newly added row
+        row_num = len(worksheet.get_all_values())
+        worksheet.format(f'A{row_num}:M{row_num}', {
+            'horizontalAlignment': 'CENTER',
+            'verticalAlignment': 'MIDDLE'
+        })
+        
+        # Format price column
+        worksheet.format(f'K{row_num}', {
+            'horizontalAlignment': 'RIGHT',
+            'textFormat': {'bold': True}
+        })
+        
+        # Format status column with color
+        if status == 'Pending':
+            worksheet.format(f'L{row_num}', {
+                'backgroundColor': {'red': 1.0, 'green': 0.8, 'blue': 0.4},
                 'textFormat': {'bold': True}
             })
-            
-            # Format status column with color
-            if status == 'Pending':
-                worksheet.format(f'L{row_num}', {
-                    'backgroundColor': {'red': 1.0, 'green': 0.8, 'blue': 0.4},
-                    'textFormat': {'bold': True}
-                })
-            elif status == 'Accepted':
-                worksheet.format(f'L{row_num}', {
-                    'backgroundColor': {'red': 0.7, 'green': 0.9, 'blue': 0.7},
-                    'textFormat': {'bold': True}
-                })
-            
-            return True
-        return False
+        elif status == 'Accepted':
+            worksheet.format(f'L{row_num}', {
+                'backgroundColor': {'red': 0.7, 'green': 0.9, 'blue': 0.7},
+                'textFormat': {'bold': True}
+            })
+        
+        print("Booking added to sheet successfully")
+        return True
+        
     except Exception as e:
-        print(f"Error adding booking to sheet: {e}")
+        print(f"ERROR adding booking to sheet: {e}")
+        import traceback
+        traceback.print_exc()
         return False
 
 def update_booking_in_sheet(booking_id, date_str, status, accepted_at='', expires_at=''):
@@ -307,39 +318,52 @@ def room_details(room_id):
 
 @app.route("/book", methods=["POST"])
 def book():
+    try:
+        name = request.form["name"]
+        room = request.form["room"]
+        people = int(request.form["people"])
+        ac = request.form["ac"]
+        phone = request.form["phone"]
+        email = request.form["email"]
+        date = request.form["date"]
+        time_slot = request.form["time_slot"]
 
-    name = request.form["name"]
-    room = request.form["room"]
-    people = int(request.form["people"])
-    ac = request.form["ac"]
-    phone = request.form["phone"]
-    email = request.form["email"]
-    date = request.form["date"]
-    time_slot = request.form["time_slot"]
+        print(f"Received booking: name={name}, room={room}, date={date}")
 
-    # Convert room codes to display names
-    room_names = {
-        "small4": "Small Room (4 People)",
-        "small2": "Mini Room (2 People)",
-        "big8": "Big Room (8 People)"
-    }
-    room_display = room_names.get(room, room)
+        # Convert room codes to display names
+        room_names = {
+            "small4": "Small Room (4 People)",
+            "small2": "Mini Room (2 People)",
+            "big8": "Big Room (8 People)"
+        }
+        room_display = room_names.get(room, room)
 
-    price = calculate_price(room, people, ac)
+        price = calculate_price(room, people, ac)
+        print(f"Calculated price: {price}")
 
-    # Add to database with original room code
-    add_booking((name, room, people, ac, phone, email, date, time_slot, price))
+        # Add to database with original room code
+        add_booking((name, room, people, ac, phone, email, date, time_slot, price))
+        print("Added to database")
+        
+        # Get the booking ID of the just-inserted booking
+        bookings = get_bookings()
+        booking_id = bookings[0][0] if bookings else 0
+        print(f"Booking ID: {booking_id}")
+
+        # Add to Google Sheets with display name
+        print(f"Adding to Google Sheets...")
+        sheet_success = add_booking_to_sheet(booking_id, name, date, time_slot, room_display, people, ac, phone, email, price, 'Pending')
+        print(f"Sheet success: {sheet_success}")
+
+        return render_template("success.html", 
+            message="Booking confirmed! Your booking has been recorded.",
+            name=name, room=room_display, people=people, ac=ac, date=date, time_slot=time_slot, price=price)
     
-    # Get the booking ID of the just-inserted booking
-    bookings = get_bookings()
-    booking_id = bookings[0][0] if bookings else 0
-
-    # Add to Google Sheets with display name
-    sheet_success = add_booking_to_sheet(booking_id, name, date, time_slot, room_display, people, ac, phone, email, price, 'Pending')
-
-    return render_template("success.html", 
-        message="Booking confirmed! Your booking has been recorded.",
-        name=name, room=room_display, people=people, ac=ac, date=date, time_slot=time_slot, price=price)
+    except Exception as e:
+        print(f"ERROR in book route: {e}")
+        import traceback
+        traceback.print_exc()
+        return f"Error: {e}", 500
 
 
 @app.route("/vedhyogi/login", methods=["GET", "POST"])
