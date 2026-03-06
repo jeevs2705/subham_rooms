@@ -75,20 +75,13 @@ def get_or_create_sheet_for_date(date_str):
                 'horizontalAlignment': 'CENTER'
             })
             
-            # Set column widths for better visibility
-            worksheet.set_column_width('A', 50)   # ID
-            worksheet.set_column_width('B', 150)  # Name
-            worksheet.set_column_width('C', 120)  # Room
-            worksheet.set_column_width('D', 80)   # People
-            worksheet.set_column_width('E', 80)   # AC
-            worksheet.set_column_width('F', 130)  # Phone
-            worksheet.set_column_width('G', 200)  # Email
-            worksheet.set_column_width('H', 100)  # Date
-            worksheet.set_column_width('I', 120)  # Check-In Time
-            worksheet.set_column_width('J', 120)  # Check-Out Time
-            worksheet.set_column_width('K', 100)  # Price
-            worksheet.set_column_width('L', 100)  # Status
-            worksheet.set_column_width('M', 150)  # Accepted Time
+            # Set column widths for better visibility (using columns_auto_resize or batch_update)
+            try:
+                # Try newer method
+                worksheet.columns_auto_resize(0, 12)  # Auto-resize columns A to M
+            except:
+                # If that doesn't work, skip column width setting
+                pass
         
         return worksheet
     except Exception as e:
