@@ -1,0 +1,48 @@
+========================================
+COPY THIS CODE FOR PYTHONANYWHERE WSGI
+========================================
+
+STEP 1: Copy everything between the lines below
+STEP 2: Replace YOURUSERNAME with your actual PythonAnywhere username (3 places)
+STEP 3: Paste into PythonAnywhere WSGI file
+
+--- START COPYING FROM HERE ---
+
+import sys
+import os
+
+project_home = '/home/YOURUSERNAME/subham_rooms'
+if project_home not in sys.path:
+    sys.path = [project_home] + sys.path
+
+os.environ['GOOGLE_CREDENTIALS'] = open('/home/YOURUSERNAME/subham_rooms/credentials.json').read()
+
+from app import app as application
+
+--- STOP COPYING HERE ---
+
+IMPORTANT: Replace YOURUSERNAME with your actual username!
+
+Example:
+If your username is "subhamrooms", change:
+  /home/YOURUSERNAME/subham_rooms
+to:
+  /home/subhamrooms/subham_rooms
+
+This appears 3 times in the code - replace all 3!
+
+========================================
+WHERE TO PASTE THIS:
+========================================
+
+1. Login to PythonAnywhere
+2. Go to "Web" tab
+3. Find "Code" section
+4. Click on the WSGI configuration file link
+   (looks like: /var/www/yourusername_pythonanywhere_com_wsgi.py)
+5. DELETE everything in that file
+6. PASTE this code
+7. REPLACE YOURUSERNAME (3 times)
+8. Click "Save" button (top right)
+
+========================================

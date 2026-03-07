@@ -52,8 +52,21 @@ Print this and check off as you go!
 - [ ] In Web tab, find "Code" section
 - [ ] Click on WSGI configuration file link
 - [ ] Delete ALL existing content
-- [ ] Copy and paste the WSGI code from guide
-- [ ] Replace `YOURUSERNAME` with your actual username (2 places)
+- [ ] Copy the code from `wsgi_config.py` file (in your repo)
+- [ ] OR copy this code:
+```python
+import sys
+import os
+
+project_home = '/home/YOURUSERNAME/subham_rooms'
+if project_home not in sys.path:
+    sys.path = [project_home] + sys.path
+
+os.environ['GOOGLE_CREDENTIALS'] = open('/home/YOURUSERNAME/subham_rooms/credentials.json').read()
+
+from app import app as application
+```
+- [ ] Replace `YOURUSERNAME` with your actual username (appears 3 times)
 - [ ] Click "Save" button (top right)
 
 ---

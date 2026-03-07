@@ -45,75 +45,7 @@ body::before {
     }
 }
 
-/* Floating particles */
-.particle {
-    position: fixed;
-    pointer-events: none;
-    z-index: 0;
-    opacity: 0.6;
-    animation: float 20s infinite ease-in-out;
-}
-
-.particle:nth-child(1) {
-    top: 10%;
-    left: 10%;
-    font-size: 40px;
-    animation-delay: 0s;
-}
-
-.particle:nth-child(2) {
-    top: 20%;
-    right: 15%;
-    font-size: 35px;
-    animation-delay: 2s;
-}
-
-.particle:nth-child(3) {
-    bottom: 15%;
-    left: 20%;
-    font-size: 45px;
-    animation-delay: 4s;
-}
-
-.particle:nth-child(4) {
-    bottom: 25%;
-    right: 10%;
-    font-size: 38px;
-    animation-delay: 6s;
-}
-
-.particle:nth-child(5) {
-    top: 50%;
-    left: 5%;
-    font-size: 42px;
-    animation-delay: 8s;
-}
-
-.particle:nth-child(6) {
-    top: 60%;
-    right: 5%;
-    font-size: 36px;
-    animation-delay: 10s;
-}
-
-@keyframes float {
-    0%, 100% {
-        transform: translateY(0) rotate(0deg);
-        opacity: 0.6;
-    }
-    25% {
-        transform: translateY(-20px) rotate(5deg);
-        opacity: 0.8;
-    }
-    50% {
-        transform: translateY(-40px) rotate(-5deg);
-        opacity: 0.4;
-    }
-    75% {
-        transform: translateY(-20px) rotate(3deg);
-        opacity: 0.7;
-    }
-}
+/* Floating particles - REMOVED */
 
 /* Decorative border pattern */
 .border-top {
