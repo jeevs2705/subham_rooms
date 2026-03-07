@@ -70,17 +70,17 @@ def get_or_create_sheet_for_date(date_str):
         except gspread.exceptions.WorksheetNotFound:
             print(f"[SHEETS] Worksheet not found, creating new one: {date_str}")
             # Create new sheet for this date
-            worksheet = spreadsheet.add_worksheet(title=date_str, rows=100, cols=13)
+            worksheet = spreadsheet.add_worksheet(title=date_str, rows=100, cols=14)
             print(f"[SHEETS] New worksheet created: {date_str}")
             
             # Add headers
-            headers = ['ID', 'Name', 'Room', 'People', 'AC', 'Phone', 'Email', 'Date', 'Check-In Time', 'Check-Out Time', 'Price', 'Status', 'Accepted Time']
+            headers = ['ID', 'Name', 'Room', 'People', 'AC', 'Phone', 'Email', 'Aadhar Number', 'Date', 'Check-In Time', 'Check-Out Time', 'Price', 'Status', 'Accepted Time']
             worksheet.append_row(headers)
             print("[SHEETS] Headers added successfully")
             
             # Format header row
             try:
-                worksheet.format('A1:M1', {
+                worksheet.format('A1:N1', {
                     'textFormat': {'bold': True, 'fontSize': 11},
                     'backgroundColor': {'red': 0.2, 'green': 0.6, 'blue': 0.8},
                     'horizontalAlignment': 'CENTER'
@@ -99,7 +99,7 @@ def get_or_create_sheet_for_date(date_str):
         traceback.print_exc()
         return None
 
-def add_booking_to_sheet(booking_id, name, date_str, time_slot, room, people, ac, phone, email, price, status='Pending'):
+def add_booking_to_sheet(booking_id, name, date_str, time_slot, room, people, ac, phone, email, aadhar, price, status='Pending'):
     """Add booking to Google Sheet"""
     try:
         print(f"[SHEETS] Attempting to add booking {booking_id} to sheet for date {date_str}")
@@ -123,6 +123,7 @@ def add_booking_to_sheet(booking_id, name, date_str, time_slot, room, people, ac
             str(ac),
             str(phone),
             str(email),
+            str(aadhar),
             str(date_str),
             str(check_in),
             str(check_out),  # Empty until checkout
@@ -140,25 +141,25 @@ def add_booking_to_sheet(booking_id, name, date_str, time_slot, room, people, ac
             row_num = len(worksheet.get_all_values())
             print(f"[SHEETS] Formatting row {row_num}")
             
-            worksheet.format(f'A{row_num}:M{row_num}', {
+            worksheet.format(f'A{row_num}:N{row_num}', {
                 'horizontalAlignment': 'CENTER',
                 'verticalAlignment': 'MIDDLE'
             })
             
             # Format price column
-            worksheet.format(f'K{row_num}', {
+            worksheet.format(f'L{row_num}', {
                 'horizontalAlignment': 'RIGHT',
                 'textFormat': {'bold': True}
             })
             
             # Format status column with color
             if status == 'Pending':
-                worksheet.format(f'L{row_num}', {
+                worksheet.format(f'M{row_num}', {
                     'backgroundColor': {'red': 1.0, 'green': 0.8, 'blue': 0.4},
                     'textFormat': {'bold': True}
                 })
             elif status == 'Accepted':
-                worksheet.format(f'L{row_num}', {
+                worksheet.format(f'M{row_num}', {
                     'backgroundColor': {'red': 0.7, 'green': 0.9, 'blue': 0.7},
                     'textFormat': {'bold': True}
                 })
@@ -187,22 +188,22 @@ def update_booking_in_sheet(booking_id, date_str, status, accepted_at='', expire
             if cell:
                 row_num = cell.row
                 
-                # Update status
-                worksheet.update_cell(row_num, 12, status)  # Status column (L)
+                # Update status (column M - was L, now M after adding Aadhar)
+                worksheet.update_cell(row_num, 13, status)
                 
-                # Update accepted time (not expires time)
+                # Update accepted time (column N - was M, now N)
                 if accepted_at:
-                    worksheet.update_cell(row_num, 13, accepted_at)  # Accepted Time column (M)
+                    worksheet.update_cell(row_num, 14, accepted_at)
                 
                 # Format status cell with color
                 if status == 'Accepted':
-                    worksheet.format(f'L{row_num}', {
+                    worksheet.format(f'M{row_num}', {
                         'backgroundColor': {'red': 0.7, 'green': 0.9, 'blue': 0.7},
                         'textFormat': {'bold': True},
                         'horizontalAlignment': 'CENTER'
                     })
                 elif status == 'Checked Out':
-                    worksheet.format(f'L{row_num}', {
+                    worksheet.format(f'M{row_num}', {
                         'backgroundColor': {'red': 0.8, 'green': 0.8, 'blue': 0.8},
                         'textFormat': {'bold': True},
                         'horizontalAlignment': 'CENTER'
@@ -339,10 +340,11 @@ def book():
         ac = request.form["ac"]
         phone = request.form["phone"]
         email = request.form["email"]
+        aadhar = request.form["aadhar"]
         date = request.form["date"]
         time_slot = request.form["time_slot"]
 
-        print(f"Received booking: name={name}, room={room}, date={date}")
+        print(f"Received booking: name={name}, room={room}, date={date}, aadhar={aadhar}")
 
         # Convert room codes to display names
         room_names = {
@@ -356,7 +358,7 @@ def book():
         print(f"Calculated price: {price}")
 
         # Add to database with original room code
-        add_booking((name, room, people, ac, phone, email, date, time_slot, price))
+        add_booking((name, room, people, ac, phone, email, aadhar, date, time_slot, price))
         print("Added to database")
         
         # Get the booking ID of the just-inserted booking
@@ -366,7 +368,7 @@ def book():
 
         # Add to Google Sheets with display name
         print(f"Adding to Google Sheets...")
-        sheet_success = add_booking_to_sheet(booking_id, name, date, time_slot, room_display, people, ac, phone, email, price, 'Pending')
+        sheet_success = add_booking_to_sheet(booking_id, name, date, time_slot, room_display, people, ac, phone, email, aadhar, price, 'Pending')
         print(f"Sheet success: {sheet_success}")
 
         return render_template("success.html", 
@@ -419,8 +421,8 @@ def admin():
         booking_list = list(booking)
         
         # Parse booking date and time
-        booking_date = booking[7]  # date column (unchanged - still column 7)
-        booking_time = booking[8]  # time_slot column (unchanged - still column 8)
+        booking_date = booking[8]  # date column (was 7, now 8 after adding aadhar)
+        booking_time = booking[9]  # time_slot column (was 8, now 9 after adding aadhar)
         
         try:
             # Combine date and time
@@ -448,7 +450,7 @@ def admin_accept(booking_id):
         accept_booking(booking_id)
         
         # Update in Google Sheets with accepted time
-        date_str = booking[7]  # date column (was 6, now 7 after name added)
+        date_str = booking[8]  # date column (was 7, now 8 after adding aadhar)
         accepted_at = datetime.now().strftime("%Y-%m-%d %I:%M %p")  # e.g., "2026-03-08 02:30 PM"
         update_booking_in_sheet(booking_id, date_str, 'Accepted', accepted_at, '')
     
@@ -464,10 +466,10 @@ def admin_extend(booking_id):
         extend_booking(booking_id)
         
         # Update in Google Sheets
-        date_str = booking[7]  # date column (was 6, now 7 after name added)
+        date_str = booking[8]  # date column (was 7, now 8 after adding aadhar)
         booking_updated = get_booking_by_id(booking_id)
-        if booking_updated and booking_updated[13]:  # expires_at column (was 12, now 13)
-            expires_at = datetime.fromisoformat(booking_updated[13]).strftime("%Y-%m-%d %H:%M")
+        if booking_updated and booking_updated[14]:  # expires_at column (was 13, now 14 after adding aadhar)
+            expires_at = datetime.fromisoformat(booking_updated[14]).strftime("%Y-%m-%d %H:%M")
             update_booking_in_sheet(booking_id, date_str, 'Accepted', '', expires_at)
     
     return redirect("/vedhyogi")
@@ -478,8 +480,8 @@ def admin_extend(booking_id):
 def admin_remove(booking_id):
     """Remove a pending booking"""
     booking = get_booking_by_id(booking_id)
-    if booking and booking[10] == 'pending':  # status column (was 9, now 10)
-        date_str = booking[7]  # date column (was 6, now 7)
+    if booking and booking[11] == 'pending':  # status column (was 10, now 11 after adding aadhar)
+        date_str = booking[8]  # date column (was 7, now 8 after adding aadhar)
         remove_booking(booking_id)
         
         # Remove from Google Sheets
@@ -494,7 +496,7 @@ def admin_checkout(booking_id):
     """Check out an accepted booking (remove from database but keep in sheets)"""
     booking = get_booking_by_id(booking_id)
     if booking:
-        date_str = booking[7]  # date column (was 6, now 7 after name added)
+        date_str = booking[8]  # date column (was 7, now 8 after adding aadhar)
         
         # Get current time as checkout time
         checkout_time = datetime.now().strftime("%I:%M %p")  # e.g., "02:30 PM"
@@ -505,12 +507,12 @@ def admin_checkout(booking_id):
             cell = worksheet.find(str(booking_id))
             if cell:
                 row_num = cell.row
-                # Update check-out time (column J)
-                worksheet.update_cell(row_num, 10, checkout_time)
-                # Update status to Checked Out (column L)
-                worksheet.update_cell(row_num, 12, 'Checked Out')
+                # Update check-out time (column K - was J, now K after adding Aadhar)
+                worksheet.update_cell(row_num, 11, checkout_time)
+                # Update status to Checked Out (column M - was L, now M)
+                worksheet.update_cell(row_num, 13, 'Checked Out')
                 # Format status cell
-                worksheet.format(f'L{row_num}', {
+                worksheet.format(f'M{row_num}', {
                     'backgroundColor': {'red': 0.8, 'green': 0.8, 'blue': 0.8},
                     'textFormat': {'bold': True},
                     'horizontalAlignment': 'CENTER'
@@ -528,7 +530,7 @@ def admin_reject(booking_id):
     """Reject an accepted booking (remove completely from database and sheets)"""
     booking = get_booking_by_id(booking_id)
     if booking:
-        date_str = booking[7]  # date column (was 6, now 7 after name added)
+        date_str = booking[8]  # date column (was 7, now 8 after adding aadhar)
         
         # Remove from Google Sheets
         remove_booking_from_sheet(booking_id, date_str)
