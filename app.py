@@ -413,24 +413,22 @@ def admin():
     
     bookings = get_bookings()
     
-    # Check which bookings can be checked out (booking date/time has arrived)
-    current_time = datetime.now()
+    # Check which bookings can be checked out (on or after booking date)
+    current_date = datetime.now().date()
     bookings_with_checkout = []
     
     for booking in bookings:
         booking_list = list(booking)
         
-        # Parse booking date and time
+        # Parse booking date
         booking_date = booking[8]  # date column (was 7, now 8 after adding aadhar)
-        booking_time = booking[9]  # time_slot column (was 8, now 9 after adding aadhar)
         
         try:
-            # Combine date and time
-            booking_datetime_str = f"{booking_date} {booking_time}"
-            booking_datetime = datetime.strptime(booking_datetime_str, "%Y-%m-%d %I:%M %p")
+            # Parse just the date (ignore time)
+            booking_date_obj = datetime.strptime(booking_date, "%Y-%m-%d").date()
             
-            # Check if booking time has arrived
-            can_checkout = current_time >= booking_datetime
+            # Check if today is on or after the booking date
+            can_checkout = current_date >= booking_date_obj
         except:
             # If parsing fails, allow checkout
             can_checkout = True
