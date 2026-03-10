@@ -14,7 +14,6 @@ def init_db():
         ac TEXT,
         phone TEXT,
         email TEXT,
-        aadhar TEXT,
         date TEXT,
         time_slot TEXT,
         price INTEGER,
@@ -34,8 +33,8 @@ def add_booking(data):
     c = conn.cursor()
 
     c.execute("""
-    INSERT INTO bookings (name,room,people,ac,phone,email,aadhar,date,time_slot,price,status)
-    VALUES (?,?,?,?,?,?,?,?,?,?,'pending')
+    INSERT INTO bookings (name,room,people,ac,phone,email,date,time_slot,price,status)
+    VALUES (?,?,?,?,?,?,?,?,?,'pending')
     """, data)
 
     conn.commit()
