@@ -68,7 +68,7 @@
 </div>
 <div class="pricing-note">
 <strong data-en="Note:" data-ta="குறிப்பு:">Note:</strong>
-<span data-en="Small Room: 1-2 people | Medium Room: 3-4 people | Big Room: 6-10 people (Min 6 required)" data-ta="சிறிய அறை: 1-2 நபர்கள் | நடுத்தர அறை: 3-4 நபர்கள் | பெரிய அறை: 6-10 நபர்கள் (குறைந்தபட்சம் 6 தேவை)">Small Room: 1-2 people | Medium Room: 3-4 people | Big Room: 6-10 people (Min 6 required)</span>
+<span data-en="Small Room: 1 person + 0-1 extra | Medium Room: 3 people + 0-1 extra | Big Room: 6 people + 0-4 extra" data-ta="சிறிய அறை: 1 நபர் + 0-1 கூடுதல் | நடுத்தர அறை: 3 நபர்கள் + 0-1 கூடுதல் | பெரிய அறை: 6 நபர்கள் + 0-4 கூடுதல்">Small Room: 1 person + 0-1 extra | Medium Room: 3 people + 0-1 extra | Big Room: 6 people + 0-4 extra</span>
 </div>
 </div>
 
@@ -85,8 +85,8 @@
 <option value="big8" data-en="Big Room" data-ta="பெரிய அறை">Big Room</option>
 </select>
 
-<label for="people" data-en="👥 Number of People" data-ta="👥 நபர்களின் எண்ணிக்கை">👥 Number of People</label>
-<input type="number" name="people" id="people" placeholder="" data-placeholder-en="Enter number of people" data-placeholder-ta="நபர்களின் எண்ணிக்கையை உள்ளிடவும்" min="1" required>
+<label for="extra_people" data-en="➕ Extra People" data-ta="➕ கூடுதல் நபர்கள்">➕ Extra People</label>
+<input type="number" name="extra_people" id="extra_people" placeholder="" data-placeholder-en="Enter extra people (0 if none)" data-placeholder-ta="கூடுதல் நபர்கள் (இல்லை என்றால் 0)" min="0" value="0" required>
 
 <label for="ac" data-en="❄️ AC Preference" data-ta="❄️ ஏசி விருப்பம்">❄️ AC Preference</label>
 <select name="ac" id="ac" required>
@@ -178,55 +178,57 @@ function toggleLanguage() {
 // Set initial placeholders
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('name').placeholder = 'Enter your full name';
-    document.getElementById('people').placeholder = 'Enter number of people';
+    document.getElementById('extra_people').placeholder = 'Enter extra people (0 if none)';
     document.getElementById('phone').placeholder = 'Enter your phone number';
     document.getElementById('email').placeholder = 'Enter your email';
     
-    // Room-based people validation
+    // Room-based extra people validation
     const roomSelect = document.getElementById('room');
-    const peopleInput = document.getElementById('people');
+    const extraPeopleInput = document.getElementById('extra_people');
     
-    // Room limits
+    // Room limits (base capacity + max extra)
     const roomLimits = {
-        'small2': { min: 1, max: 2, name: 'Small Room' },
-        'small4': { min: 3, max: 4, name: 'Medium Room' },
-        'big8': { min: 6, max: 10, name: 'Big Room' }
+        'small2': { base: 1, maxExtra: 1, name: 'Small Room' },
+        'small4': { base: 3, maxExtra: 1, name: 'Medium Room' },
+        'big8': { base: 6, maxExtra: 4, name: 'Big Room' }
     };
     
     roomSelect.addEventListener('change', function() {
         const selectedRoom = this.value;
         if (selectedRoom && roomLimits[selectedRoom]) {
             const limits = roomLimits[selectedRoom];
-            peopleInput.min = limits.min;
-            peopleInput.max = limits.max;
-            peopleInput.placeholder = `${limits.min}-${limits.max} people for ${limits.name}`;
+            extraPeopleInput.max = limits.maxExtra;
+            extraPeopleInput.placeholder = `0-${limits.maxExtra} extra people for ${limits.name}`;
             
-            // Show special message for Big Room
-            let existingMessage = document.getElementById('big-room-message');
+            // Show room info message
+            let existingMessage = document.getElementById('room-info-message');
             if (existingMessage) {
                 existingMessage.remove();
             }
             
+            const message = document.createElement('div');
+            message.id = 'room-info-message';
+            message.style.cssText = 'background: #e8f5e8; border: 2px solid #4caf50; padding: 10px; border-radius: 8px; margin-top: 10px; color: #2e7d32; font-weight: bold; text-align: center;';
+            
             if (selectedRoom === 'big8') {
-                const message = document.createElement('div');
-                message.id = 'big-room-message';
-                message.style.cssText = 'background: #fff3e0; border: 2px solid #ff9933; padding: 10px; border-radius: 8px; margin-top: 10px; color: #d84315; font-weight: bold; text-align: center;';
-                message.innerHTML = '<span data-en="📞 Big Room pricing varies - Call for exact rates!" data-ta="📞 பெரிய அறை விலை மாறுபடும் - சரியான விலைக்கு அழைக்கவும்!">📞 Big Room pricing varies - Call for exact rates!</span>';
-                roomSelect.parentNode.appendChild(message);
+                message.innerHTML = '<span data-en="📞 Big Room: Base 6 people + 0-4 extra. Pricing varies - Call for rates!" data-ta="📞 பெரிய அறை: அடிப்படை 6 நபர்கள் + 0-4 கூடுதல். விலை மாறுபடும் - அழைக்கவும்!">📞 Big Room: Base 6 people + 0-4 extra. Pricing varies - Call for rates!</span>';
+            } else {
+                const totalMax = limits.base + limits.maxExtra;
+                message.innerHTML = `<span data-en="ℹ️ ${limits.name}: Base ${limits.base} people + 0-${limits.maxExtra} extra (Total: ${limits.base}-${totalMax})" data-ta="ℹ️ ${limits.name}: அடிப்படை ${limits.base} நபர்கள் + 0-${limits.maxExtra} கூடுதல் (மொத்தம்: ${limits.base}-${totalMax})">ℹ️ ${limits.name}: Base ${limits.base} people + 0-${limits.maxExtra} extra (Total: ${limits.base}-${totalMax})</span>`;
             }
+            roomSelect.parentNode.appendChild(message);
             
             // Clear invalid values
-            const currentValue = parseInt(peopleInput.value);
-            if (currentValue && (currentValue < limits.min || currentValue > limits.max)) {
-                peopleInput.value = '';
+            const currentValue = parseInt(extraPeopleInput.value);
+            if (currentValue && currentValue > limits.maxExtra) {
+                extraPeopleInput.value = '0';
             }
         } else {
-            peopleInput.min = 1;
-            peopleInput.max = 20;
-            peopleInput.placeholder = 'Enter number of people';
+            extraPeopleInput.max = 10;
+            extraPeopleInput.placeholder = 'Enter extra people (0 if none)';
             
-            // Remove big room message if exists
-            let existingMessage = document.getElementById('big-room-message');
+            // Remove room info message if exists
+            let existingMessage = document.getElementById('room-info-message');
             if (existingMessage) {
                 existingMessage.remove();
             }
@@ -234,20 +236,21 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     // Validate on input
-    peopleInput.addEventListener('input', function() {
+    extraPeopleInput.addEventListener('input', function() {
         const selectedRoom = roomSelect.value;
         if (selectedRoom && roomLimits[selectedRoom]) {
             const limits = roomLimits[selectedRoom];
             const value = parseInt(this.value);
             
-            if (value < limits.min) {
-                this.setCustomValidity(`Minimum ${limits.min} people required for ${limits.name}`);
-            } else if (value > limits.max) {
-                this.setCustomValidity(`Maximum ${limits.max} people allowed for ${limits.name} (${limits.min} + 1 extra)`);
+            if (value < 0) {
+                this.setCustomValidity('Extra people cannot be negative');
+            } else if (value > limits.maxExtra) {
+                this.setCustomValidity(`Maximum ${limits.maxExtra} extra people allowed for ${limits.name}`);
             } else {
                 this.setCustomValidity('');
             }
         }
+    });
     });
 });
 </script>

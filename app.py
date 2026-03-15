@@ -332,28 +332,38 @@ def book():
     try:
         name = request.form["name"]
         room = request.form["room"]
-        people = int(request.form["people"])
+        extra_people = int(request.form["extra_people"])
         ac = request.form["ac"]
         phone = request.form["phone"]
         email = request.form["email"]
         date = request.form["date"]
         time_slot = request.form["time_slot"]
 
-        print(f"Received booking: name={name}, room={room}, date={date}, people={people}")
+        # Calculate total people based on room base capacity + extra
+        room_base_capacity = {
+            "small2": 1,  # Small Room base
+            "small4": 3,  # Medium Room base
+            "big8": 6     # Big Room base
+        }
+        
+        base_people = room_base_capacity.get(room, 1)
+        total_people = base_people + extra_people
 
-        # Validate people count based on room type
+        print(f"Received booking: name={name}, room={room}, date={date}, base={base_people}, extra={extra_people}, total={total_people}")
+
+        # Validate extra people count based on room type
         room_limits = {
-            "small2": {"min": 1, "max": 2, "name": "Small Room"},
-            "small4": {"min": 3, "max": 4, "name": "Medium Room"}, 
-            "big8": {"min": 6, "max": 10, "name": "Big Room"}
+            "small2": {"maxExtra": 1, "name": "Small Room"},
+            "small4": {"maxExtra": 1, "name": "Medium Room"}, 
+            "big8": {"maxExtra": 4, "name": "Big Room"}
         }
         
         if room in room_limits:
             limits = room_limits[room]
-            if people < limits["min"]:
-                return f"Error: {limits['name']} requires minimum {limits['min']} people", 400
-            if people > limits["max"]:
-                return f"Error: {limits['name']} allows maximum {limits['max']} people ({limits['min']} + 1 extra)", 400
+            if extra_people < 0:
+                return f"Error: Extra people cannot be negative", 400
+            if extra_people > limits["maxExtra"]:
+                return f"Error: {limits['name']} allows maximum {limits['maxExtra']} extra people", 400
 
         # Convert room codes to display names
         room_names = {
@@ -363,11 +373,11 @@ def book():
         }
         room_display = room_names.get(room, room)
 
-        price = calculate_price(room, people, ac)
+        price = calculate_price(room, total_people, ac)
         print(f"Calculated price: {price}")
 
         # Add to database with original room code
-        add_booking((name, room, people, ac, phone, email, date, time_slot, price))
+        add_booking((name, room, total_people, ac, phone, email, date, time_slot, price))
         print("Added to database")
         
         # Get the booking ID of the just-inserted booking
@@ -377,7 +387,7 @@ def book():
 
         # Add to Google Sheets with display name
         print(f"Adding to Google Sheets...")
-        sheet_success = add_booking_to_sheet(booking_id, name, date, time_slot, room_display, people, ac, phone, email, price, 'Pending')
+        sheet_success = add_booking_to_sheet(booking_id, name, date, time_slot, room_display, total_people, ac, phone, email, price, 'Pending')
         print(f"Sheet success: {sheet_success}")
 
         return render_template("success.html", 
