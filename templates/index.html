@@ -72,7 +72,7 @@
 </div>
 </div>
 
-<form action="/book" method="POST">
+<form action="#" method="POST" id="bookingForm">
 
 <label for="name">👤 Full Name</label>
 <input type="text" name="name" id="name" placeholder="" data-placeholder-en="Enter your full name" data-placeholder-ta="உங்கள் முழு பெயரை உள்ளிடவும்" required>
@@ -254,8 +254,9 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     // AJAX form submission to handle errors with popups
-    document.querySelector('form').addEventListener('submit', function(e) {
+    document.getElementById('bookingForm').addEventListener('submit', function(e) {
         e.preventDefault();
+        console.log('Form submitted via AJAX');
         
         const formData = new FormData(this);
         
@@ -263,8 +264,22 @@ document.addEventListener('DOMContentLoaded', function() {
             method: 'POST',
             body: formData
         })
-        .then(response => response.json())
+        .then(response => {
+            console.log('Response status:', response.status);
+            console.log('Response headers:', response.headers.get('content-type'));
+            
+            if (response.headers.get('content-type')?.includes('application/json')) {
+                return response.json();
+            } else {
+                // If not JSON, treat as error
+                return response.text().then(text => {
+                    console.log('Non-JSON response:', text);
+                    throw new Error(text);
+                });
+            }
+        })
         .then(data => {
+            console.log('Parsed data:', data);
             if (data.success) {
                 // If successful, redirect to success page
                 window.location.href = data.redirect || '/success';
@@ -275,7 +290,7 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('An error occurred while processing your booking. Please try again.');
+            alert('Error: ' + error.message);
         });
     });
 });
