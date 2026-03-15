@@ -72,7 +72,7 @@
 </div>
 </div>
 
-<form action="#" method="POST" id="bookingForm">
+<form action="/book" method="POST" id="bookingForm">
 
 <label for="name">👤 Full Name</label>
 <input type="text" name="name" id="name" placeholder="" data-placeholder-en="Enter your full name" data-placeholder-ta="உங்கள் முழு பெயரை உள்ளிடவும்" required>
@@ -253,45 +253,28 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     });
     
-    // AJAX form submission to handle errors with popups
+    // Form validation before submission
     document.getElementById('bookingForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        console.log('Form submitted via AJAX');
+        const selectedRoom = roomSelect.value;
+        const extraPeople = parseInt(extraPeopleInput.value);
         
-        const formData = new FormData(this);
-        
-        fetch('/book', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => {
-            console.log('Response status:', response.status);
-            console.log('Response headers:', response.headers.get('content-type'));
+        if (selectedRoom && roomLimits[selectedRoom]) {
+            const limits = roomLimits[selectedRoom];
             
-            if (response.headers.get('content-type')?.includes('application/json')) {
-                return response.json();
-            } else {
-                // If not JSON, treat as error
-                return response.text().then(text => {
-                    console.log('Non-JSON response:', text);
-                    throw new Error(text);
-                });
+            if (extraPeople < 0) {
+                e.preventDefault();
+                alert('Extra people cannot be negative');
+                return false;
             }
-        })
-        .then(data => {
-            console.log('Parsed data:', data);
-            if (data.success) {
-                // If successful, redirect to success page
-                window.location.href = data.redirect || '/success';
-            } else {
-                // If error, show popup
-                alert(data.message);
+            
+            if (extraPeople > limits.maxExtra) {
+                e.preventDefault();
+                alert(`${limits.name} allows maximum ${limits.maxExtra} extra people`);
+                return false;
             }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Error: ' + error.message);
-        });
+        }
+        
+        return true;
     });
 });
 </script>

@@ -361,9 +361,9 @@ def book():
         if room in room_limits:
             limits = room_limits[room]
             if extra_people < 0:
-                return jsonify({"success": False, "message": f"Extra people cannot be negative"}), 400
+                return "Error: Extra people cannot be negative", 400
             if extra_people > limits["maxExtra"]:
-                return jsonify({"success": False, "message": f"{limits['name']} allows maximum {limits['maxExtra']} extra people"}), 400
+                return f"Error: {limits['name']} allows maximum {limits['maxExtra']} extra people", 400
 
         # Convert room codes to display names
         room_names = {
@@ -390,17 +390,13 @@ def book():
         sheet_success = add_booking_to_sheet(booking_id, name, date, time_slot, room_display, total_people, ac, phone, email, price, 'Pending')
         print(f"Sheet success: {sheet_success}")
 
-        return jsonify({
-            "success": True, 
-            "message": "Booking confirmed! Your booking has been recorded.",
-            "redirect": "/success"
-        })
+        return redirect('/success')
     
     except Exception as e:
         print(f"ERROR in book route: {e}")
         import traceback
         traceback.print_exc()
-        return jsonify({"success": False, "message": f"Error: {e}"}), 500
+        return f"Error: {e}", 500
 
 
 @app.route("/vedhyogi/login", methods=["GET", "POST"])
