@@ -68,7 +68,7 @@
 </div>
 <div class="pricing-note">
 <strong data-en="Note:" data-ta="குறிப்பு:">Note:</strong>
-<span data-en="Small Room: 1 person + 0-1 extra | Medium Room: 3 people + 0-1 extra | Big Room: 6 people + 0-4 extra" data-ta="சிறிய அறை: 1 நபர் + 0-1 கூடுதல் | நடுத்தர அறை: 3 நபர்கள் + 0-1 கூடுதல் | பெரிய அறை: 6 நபர்கள் + 0-4 கூடுதல்">Small Room: 1 person + 0-1 extra | Medium Room: 3 people + 0-1 extra | Big Room: 6 people + 0-4 extra</span>
+<span data-en="Small Room: 1 person + 0-1 extra | Medium Room: 3 people + 0-2 extra | Big Room: 10 people + 0-2 extra" data-ta="சிறிய அறை: 1 நபர் + 0-1 கூடுதல் | நடுத்தர அறை: 3 நபர்கள் + 0-2 கூடுதல் | பெரிய அறை: 10 நபர்கள் + 0-2 கூடுதல்">Small Room: 1 person + 0-1 extra | Medium Room: 3 people + 0-2 extra | Big Room: 10 people + 0-2 extra</span>
 </div>
 </div>
 
@@ -90,8 +90,8 @@
 
 <label for="ac" data-en="❄️ AC Preference" data-ta="❄️ ஏசி விருப்பம்">❄️ AC Preference</label>
 <select name="ac" id="ac" required>
-<option value="no" data-en="Non AC (₹500)" data-ta="ஏசி இல்லாதது (₹500)">Non AC (₹500)</option>
-<option value="yes" data-en="AC (₹1000)" data-ta="ஏசி (₹1000)">AC (₹1000)</option>
+<option value="no" data-en="Non AC" data-ta="ஏசி இல்லாதது">Non AC</option>
+<option value="yes" data-en="AC" data-ta="ஏசி">AC</option>
 </select>
 
 <label for="date" data-en="📅 Booking Date" data-ta="📅 முன்பதிவு தேதி">📅 Booking Date</label>
@@ -189,8 +189,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Room limits (base capacity + max extra)
     const roomLimits = {
         'small2': { base: 1, maxExtra: 1, name: 'Small Room' },
-        'small4': { base: 3, maxExtra: 1, name: 'Medium Room' },
-        'big8': { base: 6, maxExtra: 4, name: 'Big Room' }
+        'small4': { base: 3, maxExtra: 2, name: 'Medium Room' },
+        'big8': { base: 10, maxExtra: 2, name: 'Big Room' }
     };
     
     roomSelect.addEventListener('change', function() {
@@ -251,6 +251,32 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     });
+    });
+    
+    // AJAX form submission to handle errors with popups
+    document.querySelector('form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const formData = new FormData(this);
+        
+        fetch('/book', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // If successful, redirect to success page
+                window.location.href = data.redirect || '/success';
+            } else {
+                // If error, show popup
+                alert(data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while processing your booking. Please try again.');
+        });
     });
 });
 </script>

@@ -341,9 +341,9 @@ def book():
 
         # Calculate total people based on room base capacity + extra
         room_base_capacity = {
-            "small2": 1,  # Small Room base
-            "small4": 3,  # Medium Room base
-            "big8": 6     # Big Room base
+            "small2": 1,   # Small Room base
+            "small4": 3,   # Medium Room base
+            "big8": 10     # Big Room base
         }
         
         base_people = room_base_capacity.get(room, 1)
@@ -354,16 +354,16 @@ def book():
         # Validate extra people count based on room type
         room_limits = {
             "small2": {"maxExtra": 1, "name": "Small Room"},
-            "small4": {"maxExtra": 1, "name": "Medium Room"}, 
-            "big8": {"maxExtra": 4, "name": "Big Room"}
+            "small4": {"maxExtra": 2, "name": "Medium Room"}, 
+            "big8": {"maxExtra": 2, "name": "Big Room"}
         }
         
         if room in room_limits:
             limits = room_limits[room]
             if extra_people < 0:
-                return f"Error: Extra people cannot be negative", 400
+                return jsonify({"success": False, "message": f"Extra people cannot be negative"}), 400
             if extra_people > limits["maxExtra"]:
-                return f"Error: {limits['name']} allows maximum {limits['maxExtra']} extra people", 400
+                return jsonify({"success": False, "message": f"{limits['name']} allows maximum {limits['maxExtra']} extra people"}), 400
 
         # Convert room codes to display names
         room_names = {
@@ -390,15 +390,17 @@ def book():
         sheet_success = add_booking_to_sheet(booking_id, name, date, time_slot, room_display, total_people, ac, phone, email, price, 'Pending')
         print(f"Sheet success: {sheet_success}")
 
-        return render_template("success.html", 
-            message="Booking confirmed! Your booking has been recorded.",
-            name=name, room=room_display, people=people, ac=ac, date=date, time_slot=time_slot, price=price)
+        return jsonify({
+            "success": True, 
+            "message": "Booking confirmed! Your booking has been recorded.",
+            "redirect": "/success"
+        })
     
     except Exception as e:
         print(f"ERROR in book route: {e}")
         import traceback
         traceback.print_exc()
-        return f"Error: {e}", 500
+        return jsonify({"success": False, "message": f"Error: {e}"}), 500
 
 
 @app.route("/vedhyogi/login", methods=["GET", "POST"])
