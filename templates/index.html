@@ -68,7 +68,7 @@
 </div>
 <div class="pricing-note">
 <strong data-en="Note:" data-ta="குறிப்பு:">Note:</strong>
-<span data-en="Extra charges apply for guests exceeding room capacity" data-ta="அறை திறனை மீறும் விருந்தினர்களுக்கு கூடுதல் கட்டணம் பொருந்தும்">Extra charges apply for guests exceeding room capacity</span>
+<span data-en="Mini Room: 2-3 people | Small Room: 4-5 people | Big Room: 8-9 people (Base + 1 extra max)" data-ta="மினி அறை: 2-3 நபர்கள் | சிறிய அறை: 4-5 நபர்கள் | பெரிய அறை: 8-9 நபர்கள் (அடிப்படை + 1 கூடுதல் அதிகபட்சம்)">Mini Room: 2-3 people | Small Room: 4-5 people | Big Room: 8-9 people (Base + 1 extra max)</span>
 </div>
 </div>
 
@@ -181,6 +181,54 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('people').placeholder = 'Enter number of people';
     document.getElementById('phone').placeholder = 'Enter your phone number';
     document.getElementById('email').placeholder = 'Enter your email';
+    
+    // Room-based people validation
+    const roomSelect = document.getElementById('room');
+    const peopleInput = document.getElementById('people');
+    
+    // Room limits
+    const roomLimits = {
+        'small2': { min: 2, max: 3, name: 'Mini Room' },
+        'small4': { min: 4, max: 5, name: 'Small Room' },
+        'big8': { min: 8, max: 9, name: 'Big Room' }
+    };
+    
+    roomSelect.addEventListener('change', function() {
+        const selectedRoom = this.value;
+        if (selectedRoom && roomLimits[selectedRoom]) {
+            const limits = roomLimits[selectedRoom];
+            peopleInput.min = limits.min;
+            peopleInput.max = limits.max;
+            peopleInput.placeholder = `${limits.min}-${limits.max} people for ${limits.name}`;
+            
+            // Clear invalid values
+            const currentValue = parseInt(peopleInput.value);
+            if (currentValue && (currentValue < limits.min || currentValue > limits.max)) {
+                peopleInput.value = '';
+            }
+        } else {
+            peopleInput.min = 1;
+            peopleInput.max = 20;
+            peopleInput.placeholder = 'Enter number of people';
+        }
+    });
+    
+    // Validate on input
+    peopleInput.addEventListener('input', function() {
+        const selectedRoom = roomSelect.value;
+        if (selectedRoom && roomLimits[selectedRoom]) {
+            const limits = roomLimits[selectedRoom];
+            const value = parseInt(this.value);
+            
+            if (value < limits.min) {
+                this.setCustomValidity(`Minimum ${limits.min} people required for ${limits.name}`);
+            } else if (value > limits.max) {
+                this.setCustomValidity(`Maximum ${limits.max} people allowed for ${limits.name} (${limits.min} + 1 extra)`);
+            } else {
+                this.setCustomValidity('');
+            }
+        }
+    });
 });
 </script>
 

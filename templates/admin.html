@@ -187,13 +187,64 @@
 <tr>
 <td>{{ booking[0] }}</td>
 <td>{{ booking[1] }}</td>
-<td>{{ booking[2] }}</td>
+<td>
+    {% if booking[10] == 'accepted' %}
+        <select onchange="changeRoom({{ booking[0] }}, this.value)" style="font-size: 11px; padding: 2px;">
+            <option value="small2" {% if booking[2] == 'small2' %}selected{% endif %}>Mini Room</option>
+            <option value="small4" {% if booking[2] == 'small4' %}selected{% endif %}>Small Room</option>
+            <option value="big8" {% if booking[2] == 'big8' %}selected{% endif %}>Big Room</option>
+        </select>
+    {% else %}
+        {{ booking[2] }}
+    {% endif %}
+</td>
 <td>{{ booking[3] }}</td>
-<td>{{ booking[4] }}</td>
+<td>
+    {% if booking[10] == 'accepted' %}
+        <select onchange="changeAC({{ booking[0] }}, this.value)" style="font-size: 11px; padding: 2px;">
+            <option value="no" {% if booking[4] == 'no' %}selected{% endif %}>Non-AC</option>
+            <option value="yes" {% if booking[4] == 'yes' %}selected{% endif %}>AC</option>
+        </select>
+    {% else %}
+        {{ booking[4] }}
+    {% endif %}
+</td>
 <td>{{ booking[5] }}</td>
 <td>{{ booking[6] }}</td>
 <td>{{ booking[7] }}</td>
-<td>{{ booking[8] }}</td>
+<td>
+    {% if booking[10] == 'accepted' and not booking[8] %}
+        <select onchange="setCheckinTime({{ booking[0] }}, this.value)" style="font-size: 11px; padding: 2px;">
+            <option value="">Select Time</option>
+            <option value="12:00 AM">12:00 AM</option>
+            <option value="01:00 AM">01:00 AM</option>
+            <option value="02:00 AM">02:00 AM</option>
+            <option value="03:00 AM">03:00 AM</option>
+            <option value="04:00 AM">04:00 AM</option>
+            <option value="05:00 AM">05:00 AM</option>
+            <option value="06:00 AM">06:00 AM</option>
+            <option value="07:00 AM">07:00 AM</option>
+            <option value="08:00 AM">08:00 AM</option>
+            <option value="09:00 AM">09:00 AM</option>
+            <option value="10:00 AM">10:00 AM</option>
+            <option value="11:00 AM">11:00 AM</option>
+            <option value="12:00 PM">12:00 PM</option>
+            <option value="01:00 PM">01:00 PM</option>
+            <option value="02:00 PM">02:00 PM</option>
+            <option value="03:00 PM">03:00 PM</option>
+            <option value="04:00 PM">04:00 PM</option>
+            <option value="05:00 PM">05:00 PM</option>
+            <option value="06:00 PM">06:00 PM</option>
+            <option value="07:00 PM">07:00 PM</option>
+            <option value="08:00 PM">08:00 PM</option>
+            <option value="09:00 PM">09:00 PM</option>
+            <option value="10:00 PM">10:00 PM</option>
+            <option value="11:00 PM">11:00 PM</option>
+        </select>
+    {% else %}
+        {{ booking[8] or 'Not Set' }}
+    {% endif %}
+</td>
 <td>₹{{ booking[9] }}</td>
 <td>
     {% if booking[10] == 'pending' %}
@@ -227,7 +278,7 @@
                     <button type="submit" class="btn btn-checkout" onclick="return confirm('Check out this guest? This will remove from active bookings but keep in Google Sheets.')">✓ Check Out</button>
                 </form>
             {% else %}
-                <button class="btn btn-checkout" disabled title="Check-out available on booking date/time">⏳ Not Yet</button>
+                <button class="btn btn-checkout" disabled title="Check-out available at 12 AM on booking date">⏳ Not Yet</button>
             {% endif %}
             <form method="POST" action="/vedhyogi/reject/{{ booking[0] }}" style="display: inline;">
                 <button type="submit" class="btn btn-reject" onclick="return confirm('Reject this accepted booking? This will remove it completely.')">✗ Reject</button>
@@ -248,6 +299,93 @@
 
 </div>
 </div>
+
+<script>
+function changeRoom(bookingId, newRoom) {
+    if (confirm('Change room type? This will recalculate the price.')) {
+        fetch('/vedhyogi/change-room', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                booking_id: bookingId,
+                new_room: newRoom
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert('Error: ' + data.message);
+            }
+        })
+        .catch(error => {
+            alert('Error changing room');
+            location.reload();
+        });
+    } else {
+        location.reload(); // Reset dropdown
+    }
+}
+
+function changeAC(bookingId, newAC) {
+    if (confirm('Change AC preference? This will recalculate the price.')) {
+        fetch('/vedhyogi/change-ac', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                booking_id: bookingId,
+                new_ac: newAC
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert('Error: ' + data.message);
+            }
+        })
+        .catch(error => {
+            alert('Error changing AC preference');
+            location.reload();
+        });
+    } else {
+        location.reload(); // Reset dropdown
+    }
+}
+
+function setCheckinTime(bookingId, checkinTime) {
+    if (checkinTime && confirm('Set check-in time to ' + checkinTime + '?')) {
+        fetch('/vedhyogi/set-checkin', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                booking_id: bookingId,
+                checkin_time: checkinTime
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert('Error: ' + data.message);
+            }
+        })
+        .catch(error => {
+            alert('Error setting check-in time');
+            location.reload();
+        });
+    }
+}
+</script>
 
 </body>
 </html>

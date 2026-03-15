@@ -2,10 +2,18 @@
 GOOGLE_SHEET_NAME = "Room bookings"  # Name of your Google Sheet (exact spelling matters!)
 GOOGLE_CREDENTIALS_FILE = "credentials.json"  # Path to your service account JSON file
 
+# Room capacity and limits
 ROOM_CAPACITY = {
-    "small4": 4,
-    "small2": 2,
-    "big8": 8
+    "small4": 4,  # Minimum 4 people
+    "small2": 2,  # Minimum 2 people  
+    "big8": 8     # Minimum 8 people
+}
+
+# Maximum people allowed (base + 1 extra)
+ROOM_MAX_CAPACITY = {
+    "small4": 5,  # 4 + 1 extra
+    "small2": 3,  # 2 + 1 extra
+    "big8": 9     # 8 + 1 extra
 }
 
 ROOM_COUNT = {

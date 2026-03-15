@@ -6,6 +6,7 @@ from datetime import datetime, timedelta
 from functools import wraps
 import os
 import json
+import sqlite3
 
 from database import (init_db, add_booking, get_bookings, accept_booking, 
                       extend_booking, remove_booking, cleanup_expired_bookings,
@@ -342,7 +343,21 @@ def book():
         date = request.form["date"]
         time_slot = request.form["time_slot"]
 
-        print(f"Received booking: name={name}, room={room}, date={date}")
+        print(f"Received booking: name={name}, room={room}, date={date}, people={people}")
+
+        # Validate people count based on room type
+        room_limits = {
+            "small2": {"min": 2, "max": 3, "name": "Mini Room"},
+            "small4": {"min": 4, "max": 5, "name": "Small Room"}, 
+            "big8": {"min": 8, "max": 9, "name": "Big Room"}
+        }
+        
+        if room in room_limits:
+            limits = room_limits[room]
+            if people < limits["min"]:
+                return f"Error: {limits['name']} requires minimum {limits['min']} people", 400
+            if people > limits["max"]:
+                return f"Error: {limits['name']} allows maximum {limits['max']} people ({limits['min']} + 1 extra)", 400
 
         # Convert room codes to display names
         room_names = {
@@ -419,7 +434,7 @@ def admin():
         booking_list = list(booking)
         
         # Parse booking date
-        booking_date = booking[8]  # date column (was 7, now 8 after adding aadhar)
+        booking_date = booking[7]  # date column
         
         try:
             # Parse just the date (ignore time)
@@ -526,7 +541,7 @@ def admin_reject(booking_id):
     """Reject an accepted booking (remove completely from database and sheets)"""
     booking = get_booking_by_id(booking_id)
     if booking:
-        date_str = booking[8]  # date column (was 7, now 8 after adding aadhar)
+        date_str = booking[7]  # date column (back to 7 after removing aadhar)
         
         # Remove from Google Sheets
         remove_booking_from_sheet(booking_id, date_str)
@@ -535,6 +550,149 @@ def admin_reject(booking_id):
         checkout_booking(booking_id)
     
     return redirect("/vedhyogi")
+
+
+@app.route("/vedhyogi/change-room", methods=["POST"])
+@login_required
+def admin_change_room():
+    """Change room type for accepted booking"""
+    try:
+        data = request.get_json()
+        booking_id = data['booking_id']
+        new_room = data['new_room']
+        
+        booking = get_booking_by_id(booking_id)
+        if not booking or booking[10] != 'accepted':
+            return jsonify({'success': False, 'message': 'Booking not found or not accepted'})
+        
+        # Get current booking details
+        people = booking[3]
+        ac = booking[4]
+        
+        # Validate people count for new room
+        room_limits = {
+            "small2": {"min": 2, "max": 3, "name": "Mini Room"},
+            "small4": {"min": 4, "max": 5, "name": "Small Room"}, 
+            "big8": {"min": 8, "max": 9, "name": "Big Room"}
+        }
+        
+        if new_room in room_limits:
+            limits = room_limits[new_room]
+            if people < limits["min"] or people > limits["max"]:
+                return jsonify({'success': False, 'message': f'{limits["name"]} requires {limits["min"]}-{limits["max"]} people'})
+        
+        # Calculate new price
+        new_price = calculate_price(new_room, people, ac)
+        
+        # Update database
+        conn = sqlite3.connect("bookings.db")
+        c = conn.cursor()
+        c.execute("UPDATE bookings SET room = ?, price = ? WHERE id = ?", (new_room, new_price, booking_id))
+        conn.commit()
+        conn.close()
+        
+        # Update Google Sheets
+        date_str = booking[7]
+        worksheet = get_or_create_sheet_for_date(date_str)
+        if worksheet:
+            cell = worksheet.find(str(booking_id))
+            if cell:
+                row_num = cell.row
+                # Convert room code to display name
+                room_names = {
+                    "small4": "Small Room (4 People)",
+                    "small2": "Mini Room (2 People)",
+                    "big8": "Big Room (8 People)"
+                }
+                room_display = room_names.get(new_room, new_room)
+                worksheet.update_cell(row_num, 3, room_display)  # Room column
+                worksheet.update_cell(row_num, 11, f"₹{new_price}")  # Price column
+        
+        return jsonify({'success': True})
+        
+    except Exception as e:
+        print(f"Error changing room: {e}")
+        return jsonify({'success': False, 'message': str(e)})
+
+
+@app.route("/vedhyogi/change-ac", methods=["POST"])
+@login_required
+def admin_change_ac():
+    """Change AC preference for accepted booking"""
+    try:
+        data = request.get_json()
+        booking_id = data['booking_id']
+        new_ac = data['new_ac']
+        
+        booking = get_booking_by_id(booking_id)
+        if not booking or booking[10] != 'accepted':
+            return jsonify({'success': False, 'message': 'Booking not found or not accepted'})
+        
+        # Get current booking details
+        room = booking[2]
+        people = booking[3]
+        
+        # Calculate new price
+        new_price = calculate_price(room, people, new_ac)
+        
+        # Update database
+        conn = sqlite3.connect("bookings.db")
+        c = conn.cursor()
+        c.execute("UPDATE bookings SET ac = ?, price = ? WHERE id = ?", (new_ac, new_price, booking_id))
+        conn.commit()
+        conn.close()
+        
+        # Update Google Sheets
+        date_str = booking[7]
+        worksheet = get_or_create_sheet_for_date(date_str)
+        if worksheet:
+            cell = worksheet.find(str(booking_id))
+            if cell:
+                row_num = cell.row
+                worksheet.update_cell(row_num, 5, new_ac)  # AC column
+                worksheet.update_cell(row_num, 11, f"₹{new_price}")  # Price column
+        
+        return jsonify({'success': True})
+        
+    except Exception as e:
+        print(f"Error changing AC: {e}")
+        return jsonify({'success': False, 'message': str(e)})
+
+
+@app.route("/vedhyogi/set-checkin", methods=["POST"])
+@login_required
+def admin_set_checkin():
+    """Set check-in time for accepted booking"""
+    try:
+        data = request.get_json()
+        booking_id = data['booking_id']
+        checkin_time = data['checkin_time']
+        
+        booking = get_booking_by_id(booking_id)
+        if not booking or booking[10] != 'accepted':
+            return jsonify({'success': False, 'message': 'Booking not found or not accepted'})
+        
+        # Update database
+        conn = sqlite3.connect("bookings.db")
+        c = conn.cursor()
+        c.execute("UPDATE bookings SET time_slot = ? WHERE id = ?", (checkin_time, booking_id))
+        conn.commit()
+        conn.close()
+        
+        # Update Google Sheets
+        date_str = booking[7]
+        worksheet = get_or_create_sheet_for_date(date_str)
+        if worksheet:
+            cell = worksheet.find(str(booking_id))
+            if cell:
+                row_num = cell.row
+                worksheet.update_cell(row_num, 9, checkin_time)  # Check-in time column
+        
+        return jsonify({'success': True})
+        
+    except Exception as e:
+        print(f"Error setting check-in time: {e}")
+        return jsonify({'success': False, 'message': str(e)})
 
 
 if __name__ == "__main__":
