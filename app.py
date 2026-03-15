@@ -270,7 +270,7 @@ def room_details(room_id):
         "room-small4": {
             "name_en": "Medium Room",
             "name_ta": "நடுத்தர அறை",
-            "capacity": 3,
+            "capacity": 4,
             "price_non_ac": 2000,
             "price_ac": 3000,
             "facilities": [
@@ -285,7 +285,7 @@ def room_details(room_id):
         "room-small2": {
             "name_en": "Small Room",
             "name_ta": "சிறிய அறை",
-            "capacity": 1,
+            "capacity": 2,
             "price_non_ac": 1000,
             "price_ac": 1500,
             "facilities": [
@@ -341,8 +341,8 @@ def book():
 
         # Calculate total people based on room base capacity + extra
         room_base_capacity = {
-            "small2": 1,   # Small Room base
-            "small4": 3,   # Medium Room base
+            "small2": 2,   # Small Room base
+            "small4": 4,   # Medium Room base
             "big8": 10     # Big Room base
         }
         

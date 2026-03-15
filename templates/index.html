@@ -68,7 +68,7 @@
 </div>
 <div class="pricing-note">
 <strong data-en="Note:" data-ta="குறிப்பு:">Note:</strong>
-<span data-en="Small Room: 1 person + 0-1 extra | Medium Room: 3 people + 0-2 extra | Big Room: 10 people + 0-2 extra" data-ta="சிறிய அறை: 1 நபர் + 0-1 கூடுதல் | நடுத்தர அறை: 3 நபர்கள் + 0-2 கூடுதல் | பெரிய அறை: 10 நபர்கள் + 0-2 கூடுதல்">Small Room: 1 person + 0-1 extra | Medium Room: 3 people + 0-2 extra | Big Room: 10 people + 0-2 extra</span>
+<span data-en="Small Room: 2 person + 1 extra | Medium Room: 4 people + 2 extra | Big Room: 10 people + 2 extra" data-ta="சிறிய அறை: 2 நபர் + 1 கூடுதல் | நடுத்தர அறை: 4 நபர்கள் + 2 கூடுதல் | பெரிய அறை: 10 நபர்கள் + 2 கூடுதல்">Small Room: 2 person + 1 extra | Medium Room: 4 people + 2 extra | Big Room: 10 people + 2 extra</span>
 </div>
 </div>
 
@@ -188,8 +188,8 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Room limits (base capacity + max extra)
     const roomLimits = {
-        'small2': { base: 1, maxExtra: 1, name: 'Small Room' },
-        'small4': { base: 3, maxExtra: 2, name: 'Medium Room' },
+        'small2': { base: 2, maxExtra: 1, name: 'Small Room' },
+        'small4': { base: 4, maxExtra: 2, name: 'Medium Room' },
         'big8': { base: 10, maxExtra: 2, name: 'Big Room' }
     };
     
