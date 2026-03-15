@@ -56,7 +56,7 @@
 <div class="price-card">
 <div class="price-icon">🏘️</div>
 <div class="price-title" data-en="Big Room" data-ta="பெரிய அறை">Big Room</div>
-<div class="price-amount">₹3,000 / ₹4,500</div>
+<div class="price-amount" data-en="Call for Pricing" data-ta="விலைக்கு அழைக்கவும்">Call for Pricing</div>
 <div class="price-duration" data-en="Non-AC / AC" data-ta="ஏசி இல்லாதது / ஏசி">Non-AC / AC</div>
 </div>
 <div class="price-card">
@@ -68,7 +68,7 @@
 </div>
 <div class="pricing-note">
 <strong data-en="Note:" data-ta="குறிப்பு:">Note:</strong>
-<span data-en="Small Room: 2-3 people | Medium Room: 4-6 people | Big Room: 6-10 people (Min 6 required)" data-ta="சிறிய அறை: 2-3 நபர்கள் | நடுத்தர அறை: 4-6 நபர்கள் | பெரிய அறை: 6-10 நபர்கள் (குறைந்தபட்சம் 6 தேவை)">Small Room: 2-3 people | Medium Room: 4-6 people | Big Room: 6-10 people (Min 6 required)</span>
+<span data-en="Small Room: 1-2 people | Medium Room: 3-4 people | Big Room: 6-10 people (Min 6 required)" data-ta="சிறிய அறை: 1-2 நபர்கள் | நடுத்தர அறை: 3-4 நபர்கள் | பெரிய அறை: 6-10 நபர்கள் (குறைந்தபட்சம் 6 தேவை)">Small Room: 1-2 people | Medium Room: 3-4 people | Big Room: 6-10 people (Min 6 required)</span>
 </div>
 </div>
 
@@ -188,9 +188,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Room limits
     const roomLimits = {
-        'small2': { min: 2, max: 3, name: 'Mini Room' },
-        'small4': { min: 4, max: 5, name: 'Small Room' },
-        'big8': { min: 8, max: 9, name: 'Big Room' }
+        'small2': { min: 1, max: 2, name: 'Small Room' },
+        'small4': { min: 3, max: 4, name: 'Medium Room' },
+        'big8': { min: 6, max: 10, name: 'Big Room' }
     };
     
     roomSelect.addEventListener('change', function() {
@@ -201,6 +201,20 @@ document.addEventListener('DOMContentLoaded', function() {
             peopleInput.max = limits.max;
             peopleInput.placeholder = `${limits.min}-${limits.max} people for ${limits.name}`;
             
+            // Show special message for Big Room
+            let existingMessage = document.getElementById('big-room-message');
+            if (existingMessage) {
+                existingMessage.remove();
+            }
+            
+            if (selectedRoom === 'big8') {
+                const message = document.createElement('div');
+                message.id = 'big-room-message';
+                message.style.cssText = 'background: #fff3e0; border: 2px solid #ff9933; padding: 10px; border-radius: 8px; margin-top: 10px; color: #d84315; font-weight: bold; text-align: center;';
+                message.innerHTML = '<span data-en="📞 Big Room pricing varies - Call for exact rates!" data-ta="📞 பெரிய அறை விலை மாறுபடும் - சரியான விலைக்கு அழைக்கவும்!">📞 Big Room pricing varies - Call for exact rates!</span>';
+                roomSelect.parentNode.appendChild(message);
+            }
+            
             // Clear invalid values
             const currentValue = parseInt(peopleInput.value);
             if (currentValue && (currentValue < limits.min || currentValue > limits.max)) {
@@ -210,6 +224,12 @@ document.addEventListener('DOMContentLoaded', function() {
             peopleInput.min = 1;
             peopleInput.max = 20;
             peopleInput.placeholder = 'Enter number of people';
+            
+            // Remove big room message if exists
+            let existingMessage = document.getElementById('big-room-message');
+            if (existingMessage) {
+                existingMessage.remove();
+            }
         }
     });
     

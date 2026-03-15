@@ -4,16 +4,16 @@ GOOGLE_CREDENTIALS_FILE = "credentials.json"  # Path to your service account JSO
 
 # Room capacity and limits
 ROOM_CAPACITY = {
-    "small4": 4,  # Medium Room - Minimum 4 people
-    "small2": 2,  # Small Room - Minimum 2 people  
+    "small4": 3,  # Medium Room - Minimum 3 people
+    "small2": 1,  # Small Room - Minimum 1 people  
     "big8": 6     # Big Room - Minimum 6 people
 }
 
 # Maximum people allowed
 ROOM_MAX_CAPACITY = {
-    "small4": 6,  # Medium: 4 + 2 extra
-    "small2": 3,  # Small: 2 + 1 extra
-    "big8": 10    # Big: 8 + 2 extra (but min 6 required)
+    "small4": 4,  # Medium: 3 + 1 extra
+    "small2": 2,  # Small: 1 + 1 extra
+    "big8": 10    # Big: 6 + 4 extra (but min 6 required)
 }
 
 ROOM_COUNT = {

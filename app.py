@@ -127,7 +127,7 @@ def add_booking_to_sheet(booking_id, name, date_str, time_slot, room, people, ac
             str(date_str),
             str(check_in),
             str(check_out),  # Empty until checkout
-            f"₹{price}",
+            f"₹{price}" if price > 0 else "Call for pricing",
             str(status),
             ''
         ]
@@ -231,7 +231,10 @@ def remove_booking_from_sheet(booking_id, date_str):
 
 
 def calculate_price(room, people, ac):
-
+    # Big Room has variable pricing - return 0 as placeholder
+    if room == "big8":
+        return 0
+    
     # Get room-specific pricing
     room_pricing = ROOM_PRICES.get(room, {"non_ac": 500, "ac": 1000})
     
@@ -267,53 +270,46 @@ def room_details(room_id):
         "room-small4": {
             "name_en": "Medium Room",
             "name_ta": "நடுத்தர அறை",
-            "capacity": 4,
+            "capacity": 3,
             "price_non_ac": 2000,
             "price_ac": 3000,
             "facilities": [
-                {"icon": "🛏️", "name_en": "Comfortable Beds", "name_ta": "வசதியான படுக்கைகள்"},
-                {"icon": "🪟", "name_en": "Windows with View", "name_ta": "காட்சியுடன் ஜன்னல்கள்"},
-                {"icon": "💡", "name_en": "LED Lighting", "name_ta": "LED விளக்குகள்"},
-                {"icon": "🔌", "name_en": "Power Outlets", "name_ta": "மின் சாக்கெட்டுகள்"},
-                {"icon": "🧹", "name_en": "Daily Cleaning", "name_ta": "தினசரி சுத்தம்"},
+                {"icon": "🛏️", "name_en": "Comfortable Bed", "name_ta": "வசதியான படுக்கை"},
+                {"icon": "🌡️", "name_en": "AC & Non-AC Options", "name_ta": "ஏசி & ஏசி இல்லாத விருப்பங்கள்"},
+                {"icon": "🚿", "name_en": "Private Bathroom", "name_ta": "தனியார் குளியலறை"},
+                {"icon": "💡", "name_en": "24/7 Electricity", "name_ta": "24/7 மின்சாரம்"},
                 {"icon": "🔒", "name_en": "Secure Lock", "name_ta": "பாதுகாப்பான பூட்டு"},
-                {"icon": "🪭", "name_en": "Fan/AC Option", "name_ta": "விசிறி/ஏசி விருப்பம்"},
-                {"icon": "🚪", "name_en": "Private Entrance", "name_ta": "தனி நுழைவு"},
-            ]
+                {"icon": "🧹", "name_en": "Daily Cleaning", "name_ta": "தினசரி சுத்தம்"}
+            ],
         },
         "room-small2": {
             "name_en": "Small Room",
             "name_ta": "சிறிய அறை",
-            "capacity": 2,
+            "capacity": 1,
             "price_non_ac": 1000,
             "price_ac": 1500,
             "facilities": [
-                {"icon": "🛏️", "name_en": "Cozy Bed", "name_ta": "வசதியான படுக்கை"},
-                {"icon": "🪟", "name_en": "Window", "name_ta": "ஜன்னல்"},
-                {"icon": "💡", "name_en": "LED Lighting", "name_ta": "LED விளக்குகள்"},
-                {"icon": "🔌", "name_en": "Power Outlets", "name_ta": "மின் சாக்கெட்டுகள்"},
-                {"icon": "🧹", "name_en": "Daily Cleaning", "name_ta": "தினசரி சுத்தம்"},
+                {"icon": "🛏️", "name_en": "Comfortable Bed", "name_ta": "வசதியான படுக்கை"},
+                {"icon": "🌡️", "name_en": "AC & Non-AC Options", "name_ta": "ஏசி & ஏசி இல்லாத விருப்பங்கள்"},
+                {"icon": "🚿", "name_en": "Private Bathroom", "name_ta": "தனியார் குளியலறை"},
+                {"icon": "💡", "name_en": "24/7 Electricity", "name_ta": "24/7 மின்சாரம்"},
                 {"icon": "🔒", "name_en": "Secure Lock", "name_ta": "பாதுகாப்பான பூட்டு"},
-                {"icon": "🪭", "name_en": "Fan/AC Option", "name_ta": "விசிறி/ஏசி விருப்பம்"},
-                {"icon": "🤫", "name_en": "Quiet & Private", "name_ta": "அமைதியான & தனிப்பட்ட"},
-            ]
+                {"icon": "🧹", "name_en": "Daily Cleaning", "name_ta": "தினசரி சுத்தம்"}
+            ],
         },
         "room-big8": {
             "name_en": "Big Room",
             "name_ta": "பெரிய அறை",
             "capacity": 6,
-            "price_non_ac": 3000,
-            "price_ac": 4500,
+            "price_non_ac": "Call for pricing",
+            "price_ac": "Call for pricing",
             "facilities": [
                 {"icon": "🛏️", "name_en": "Multiple Beds", "name_ta": "பல படுக்கைகள்"},
-                {"icon": "🪟", "name_en": "Large Windows", "name_ta": "பெரிய ஜன்னல்கள்"},
-                {"icon": "💡", "name_en": "Bright Lighting", "name_ta": "பிரகாசமான விளக்குகள்"},
-                {"icon": "🔌", "name_en": "Multiple Outlets", "name_ta": "பல சாக்கெட்டுகள்"},
-                {"icon": "🧹", "name_en": "Daily Cleaning", "name_ta": "தினசரி சுத்தம்"},
+                {"icon": "🌡️", "name_en": "AC & Non-AC Options", "name_ta": "ஏசி & ஏசி இல்லாத விருப்பங்கள்"},
+                {"icon": "🚿", "name_en": "Private Bathroom", "name_ta": "தனியார் குளியலறை"},
+                {"icon": "💡", "name_en": "24/7 Electricity", "name_ta": "24/7 மின்சாரம்"},
                 {"icon": "🔒", "name_en": "Secure Lock", "name_ta": "பாதுகாப்பான பூட்டு"},
-                {"icon": "🪭", "name_en": "Fan/AC Option", "name_ta": "விசிறி/ஏசி விருப்பம்"},
-                {"icon": "👨‍👩‍👧‍👦", "name_en": "Family Friendly", "name_ta": "குடும்ப நட்பு"},
-                {"icon": "📏", "name_en": "Spacious Area", "name_ta": "விசாலமான பகுதி"},
+                {"icon": "🧹", "name_en": "Daily Cleaning", "name_ta": "தினசரி சுத்தம்"}
             ]
         }
     }
@@ -347,8 +343,8 @@ def book():
 
         # Validate people count based on room type
         room_limits = {
-            "small2": {"min": 2, "max": 3, "name": "Small Room"},
-            "small4": {"min": 4, "max": 6, "name": "Medium Room"}, 
+            "small2": {"min": 1, "max": 2, "name": "Small Room"},
+            "small4": {"min": 3, "max": 4, "name": "Medium Room"}, 
             "big8": {"min": 6, "max": 10, "name": "Big Room"}
         }
         
@@ -571,8 +567,8 @@ def admin_change_room():
         
         # Validate people count for new room
         room_limits = {
-            "small2": {"min": 2, "max": 3, "name": "Small Room"},
-            "small4": {"min": 4, "max": 6, "name": "Medium Room"}, 
+            "small2": {"min": 1, "max": 2, "name": "Small Room"},
+            "small4": {"min": 3, "max": 4, "name": "Medium Room"}, 
             "big8": {"min": 6, "max": 10, "name": "Big Room"}
         }
         
@@ -606,7 +602,7 @@ def admin_change_room():
                 }
                 room_display = room_names.get(new_room, new_room)
                 worksheet.update_cell(row_num, 3, room_display)  # Room column
-                worksheet.update_cell(row_num, 11, f"₹{new_price}")  # Price column
+                worksheet.update_cell(row_num, 11, f"₹{new_price}" if new_price > 0 else "Call for pricing")  # Price column
         
         return jsonify({'success': True})
         
@@ -650,7 +646,7 @@ def admin_change_ac():
             if cell:
                 row_num = cell.row
                 worksheet.update_cell(row_num, 5, new_ac)  # AC column
-                worksheet.update_cell(row_num, 11, f"₹{new_price}")  # Price column
+                worksheet.update_cell(row_num, 11, f"₹{new_price}" if new_price > 0 else "Call for pricing")  # Price column
         
         return jsonify({'success': True})
         
