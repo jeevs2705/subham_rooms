@@ -190,8 +190,8 @@
 <td>
     {% if booking[10] == 'accepted' %}
         <select onchange="changeRoom({{ booking[0] }}, this.value)" style="font-size: 11px; padding: 2px;">
-            <option value="small2" {% if booking[2] == 'small2' %}selected{% endif %}>Mini Room</option>
-            <option value="small4" {% if booking[2] == 'small4' %}selected{% endif %}>Small Room</option>
+            <option value="small2" {% if booking[2] == 'small2' %}selected{% endif %}>Small Room</option>
+            <option value="small4" {% if booking[2] == 'small4' %}selected{% endif %}>Medium Room</option>
             <option value="big8" {% if booking[2] == 'big8' %}selected{% endif %}>Big Room</option>
         </select>
     {% else %}

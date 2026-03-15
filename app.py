@@ -265,11 +265,11 @@ def room_details(room_id):
     # Room data with specific pricing
     rooms_data = {
         "room-small4": {
-            "name_en": "Small Room (4 People)",
-            "name_ta": "சிறிய அறை (4 நபர்கள்)",
+            "name_en": "Medium Room",
+            "name_ta": "நடுத்தர அறை",
             "capacity": 4,
-            "price_non_ac": 500,
-            "price_ac": 1000,
+            "price_non_ac": 2000,
+            "price_ac": 3000,
             "facilities": [
                 {"icon": "🛏️", "name_en": "Comfortable Beds", "name_ta": "வசதியான படுக்கைகள்"},
                 {"icon": "🪟", "name_en": "Windows with View", "name_ta": "காட்சியுடன் ஜன்னல்கள்"},
@@ -282,11 +282,11 @@ def room_details(room_id):
             ]
         },
         "room-small2": {
-            "name_en": "Mini Room (2 People)",
-            "name_ta": "மினி அறை (2 நபர்கள்)",
+            "name_en": "Small Room",
+            "name_ta": "சிறிய அறை",
             "capacity": 2,
-            "price_non_ac": 250,
-            "price_ac": 500,
+            "price_non_ac": 1000,
+            "price_ac": 1500,
             "facilities": [
                 {"icon": "🛏️", "name_en": "Cozy Bed", "name_ta": "வசதியான படுக்கை"},
                 {"icon": "🪟", "name_en": "Window", "name_ta": "ஜன்னல்"},
@@ -299,11 +299,11 @@ def room_details(room_id):
             ]
         },
         "room-big8": {
-            "name_en": "Big Room (8 People)",
-            "name_ta": "பெரிய அறை (8 நபர்கள்)",
-            "capacity": 8,
-            "price_non_ac": 1000,
-            "price_ac": 2000,
+            "name_en": "Big Room",
+            "name_ta": "பெரிய அறை",
+            "capacity": 6,
+            "price_non_ac": 3000,
+            "price_ac": 4500,
             "facilities": [
                 {"icon": "🛏️", "name_en": "Multiple Beds", "name_ta": "பல படுக்கைகள்"},
                 {"icon": "🪟", "name_en": "Large Windows", "name_ta": "பெரிய ஜன்னல்கள்"},
@@ -347,9 +347,9 @@ def book():
 
         # Validate people count based on room type
         room_limits = {
-            "small2": {"min": 2, "max": 3, "name": "Mini Room"},
-            "small4": {"min": 4, "max": 5, "name": "Small Room"}, 
-            "big8": {"min": 8, "max": 9, "name": "Big Room"}
+            "small2": {"min": 2, "max": 3, "name": "Small Room"},
+            "small4": {"min": 4, "max": 6, "name": "Medium Room"}, 
+            "big8": {"min": 6, "max": 10, "name": "Big Room"}
         }
         
         if room in room_limits:
@@ -361,9 +361,9 @@ def book():
 
         # Convert room codes to display names
         room_names = {
-            "small4": "Small Room (4 People)",
-            "small2": "Mini Room (2 People)",
-            "big8": "Big Room (8 People)"
+            "small4": "Medium Room",
+            "small2": "Small Room",
+            "big8": "Big Room"
         }
         room_display = room_names.get(room, room)
 
@@ -571,9 +571,9 @@ def admin_change_room():
         
         # Validate people count for new room
         room_limits = {
-            "small2": {"min": 2, "max": 3, "name": "Mini Room"},
-            "small4": {"min": 4, "max": 5, "name": "Small Room"}, 
-            "big8": {"min": 8, "max": 9, "name": "Big Room"}
+            "small2": {"min": 2, "max": 3, "name": "Small Room"},
+            "small4": {"min": 4, "max": 6, "name": "Medium Room"}, 
+            "big8": {"min": 6, "max": 10, "name": "Big Room"}
         }
         
         if new_room in room_limits:
@@ -600,9 +600,9 @@ def admin_change_room():
                 row_num = cell.row
                 # Convert room code to display name
                 room_names = {
-                    "small4": "Small Room (4 People)",
-                    "small2": "Mini Room (2 People)",
-                    "big8": "Big Room (8 People)"
+                    "small4": "Medium Room",
+                    "small2": "Small Room",
+                    "big8": "Big Room"
                 }
                 room_display = room_names.get(new_room, new_room)
                 worksheet.update_cell(row_num, 3, room_display)  # Room column
