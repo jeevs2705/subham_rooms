@@ -261,6 +261,12 @@ def booking():
     return render_template("index.html")
 
 
+@app.route("/success")
+def success():
+    """Success page after booking"""
+    return render_template("success.html")
+
+
 @app.route("/room/<room_id>")
 def room_details(room_id):
     """Show detailed room information"""
