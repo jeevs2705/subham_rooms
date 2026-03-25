@@ -487,7 +487,7 @@ def admin_extend(booking_id):
         extend_booking(booking_id)
         
         # Update in Google Sheets
-        date_str = booking[8]  # date column (was 7, now 8 after adding aadhar)
+        date_str = booking[7]  # date column
         booking_updated = get_booking_by_id(booking_id)
         if booking_updated and booking_updated[14]:  # expires_at column (was 13, now 14 after adding aadhar)
             expires_at = datetime.fromisoformat(booking_updated[14]).strftime("%Y-%m-%d %H:%M")
@@ -501,8 +501,8 @@ def admin_extend(booking_id):
 def admin_remove(booking_id):
     """Remove a pending booking"""
     booking = get_booking_by_id(booking_id)
-    if booking and booking[11] == 'pending':  # status column (was 10, now 11 after adding aadhar)
-        date_str = booking[8]  # date column (was 7, now 8 after adding aadhar)
+    if booking and booking[10] == 'pending':  # status column
+        date_str = booking[7]  # date column
         remove_booking(booking_id)
         
         # Remove from Google Sheets
@@ -517,7 +517,7 @@ def admin_checkout(booking_id):
     """Check out an accepted booking (remove from database but keep in sheets)"""
     booking = get_booking_by_id(booking_id)
     if booking:
-        date_str = booking[8]  # date column (was 7, now 8 after adding aadhar)
+        date_str = booking[7]  # date column
         
         # Get current time as checkout time
         checkout_time = datetime.now().strftime("%I:%M %p")  # e.g., "02:30 PM"
@@ -528,12 +528,12 @@ def admin_checkout(booking_id):
             cell = worksheet.find(str(booking_id))
             if cell:
                 row_num = cell.row
-                # Update check-out time (column K - was J, now K after adding Aadhar)
-                worksheet.update_cell(row_num, 11, checkout_time)
-                # Update status to Checked Out (column M - was L, now M)
-                worksheet.update_cell(row_num, 13, 'Checked Out')
+                # Update check-out time (column J)
+                worksheet.update_cell(row_num, 10, checkout_time)
+                # Update status to Checked Out (column L)
+                worksheet.update_cell(row_num, 12, 'Checked Out')
                 # Format status cell
-                worksheet.format(f'M{row_num}', {
+                worksheet.format(f'L{row_num}', {
                     'backgroundColor': {'red': 0.8, 'green': 0.8, 'blue': 0.8},
                     'textFormat': {'bold': True},
                     'horizontalAlignment': 'CENTER'
