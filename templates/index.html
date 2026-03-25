@@ -86,7 +86,7 @@
 </select>
 
 <label for="extra_people" data-en="➕ Extra People" data-ta="➕ கூடுதல் நபர்கள்">➕ Extra People</label>
-<input type="number" name="extra_people" id="extra_people" placeholder="" data-placeholder-en="Enter extra people (0 if none)" data-placeholder-ta="கூடுதல் நபர்கள் (இல்லை என்றால் 0)" min="0" value="0" required>
+<input type="number" name="extra_people" id="extra_people" placeholder="" data-placeholder-en="Enter extra people (0 if none)" data-placeholder-ta="கூடுதல் நபர்கள் (இல்லை என்றால் 0)" min="0" max="2" value="0" required oninput="validateExtraPeople(this)">
 
 <label for="ac" data-en="❄️ AC Preference" data-ta="❄️ ஏசி விருப்பம்">❄️ AC Preference</label>
 <select name="ac" id="ac" required>
@@ -141,6 +141,34 @@
 
 <script>
 let currentLang = 'en';
+
+// Global validation function
+function validateExtraPeople(input) {
+    const roomSelect = document.getElementById('room');
+    const selectedRoom = roomSelect.value;
+    const roomLimits = {
+        'small2': { base: 2, maxExtra: 1, name: 'Small Room' },
+        'small4': { base: 4, maxExtra: 2, name: 'Medium Room' },
+        'big8': { base: 10, maxExtra: 2, name: 'Big Room' }
+    };
+    
+    if (selectedRoom && roomLimits[selectedRoom]) {
+        const limits = roomLimits[selectedRoom];
+        const value = parseInt(input.value) || 0;
+        
+        if (value < 0) {
+            input.setCustomValidity('Extra people cannot be negative');
+            return false;
+        } else if (value > limits.maxExtra) {
+            input.setCustomValidity(`Maximum ${limits.maxExtra} extra people allowed for ${limits.name}`);
+            return false;
+        } else {
+            input.setCustomValidity('');
+            return true;
+        }
+    }
+    return true;
+}
 
 function toggleLanguage() {
     currentLang = currentLang === 'en' ? 'ta' : 'en';
@@ -251,29 +279,41 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     });
-    });
     
-    // Form validation before submission
+    // Form validation before submission - CRITICAL VALIDATION
     document.getElementById('bookingForm').addEventListener('submit', function(e) {
         const selectedRoom = roomSelect.value;
-        const extraPeople = parseInt(extraPeopleInput.value);
+        const extraPeople = parseInt(extraPeopleInput.value) || 0;
         
-        if (selectedRoom && roomLimits[selectedRoom]) {
+        console.log('Form validation:', selectedRoom, extraPeople);
+        
+        if (!selectedRoom) {
+            e.preventDefault();
+            e.stopPropagation();
+            alert('Please select a room');
+            return false;
+        }
+        
+        if (roomLimits[selectedRoom]) {
             const limits = roomLimits[selectedRoom];
             
             if (extraPeople < 0) {
                 e.preventDefault();
+                e.stopPropagation();
                 alert('Extra people cannot be negative');
                 return false;
             }
             
             if (extraPeople > limits.maxExtra) {
                 e.preventDefault();
-                alert(`${limits.name} allows maximum ${limits.maxExtra} extra people`);
+                e.stopPropagation();
+                alert(`${limits.name} allows maximum ${limits.maxExtra} extra people. You entered ${extraPeople}.`);
                 return false;
             }
         }
         
+        // If we get here, validation passed
+        console.log('Validation passed, submitting form');
         return true;
     });
 });
